@@ -10,7 +10,7 @@ import {
   type LucideIcon,
 } from "lucide-react";
 
-export type BusinessType = "JASA" | "FNB" | "RETAIL" | "PERSONAL";
+export type BusinessType = "JASA" | "FNB" | "RETAIL" | "PERSONAL" | "OTHER";
 
 export type Branding = {
   businessName: string;
@@ -89,6 +89,17 @@ export const NAV_PRESETS: Record<BusinessType, NavPreset> = {
     ],
     right: [
       { href: "/reports", label: "Report", icon: PieChart },
+      { href: "/more", label: "More", icon: Menu },
+    ],
+    fab: { href: "/new", label: "Input" },
+  },
+  OTHER: {
+    left: [
+      { href: "/dashboard", label: "Overview", icon: Home },
+      { href: "/transactions", label: "Kas", icon: Wallet },
+    ],
+    right: [
+      { href: "/orders", label: "Order", icon: ClipboardList },
       { href: "/more", label: "More", icon: Menu },
     ],
     fab: { href: "/new", label: "Input" },

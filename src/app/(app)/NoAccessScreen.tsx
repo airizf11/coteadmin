@@ -28,7 +28,7 @@ export function NoAccessScreen({ businessName, phone }: { businessName: string; 
             type="submit"
             className={cn(
               buttonVariants({ variant: "outline" }),
-              "w-full"
+              "w-full cursor-pointer"
             )}
           >
             <LogOut size={16} className="mr-2" />

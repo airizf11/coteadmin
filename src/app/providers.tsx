@@ -1,4 +1,4 @@
-// adminqinq/src/app/providers.tsx
+// coteadmin/src/app/providers.tsx
 'use client';
 
 import { GoogleOAuthProvider } from '@react-oauth/google';

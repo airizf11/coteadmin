@@ -257,7 +257,7 @@ function AdminView({
         <StatusGrid breakdown={breakdown} />
       </div>
 
-      <Link
+      {/* <Link
         href="/orders"
         className="block rounded-2xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
       >
@@ -293,7 +293,7 @@ function AdminView({
             </div>
           </CardContent>
         </Card>
-      </Link>
+      </Link> */}
 
       <div>
         <SectionHeading
@@ -339,6 +339,16 @@ function AdminView({
         </div>
       </div>
 
+      <div className="flex items-center justify-between gap-3 px-1 pt-1">
+        <span className="text-xs text-muted-foreground">
+          Total omzet sejak awal
+        </span>
+
+        <span className="text-sm font-bold text-success">
+          Rp{o.totalRevenue.toLocaleString('id-ID')}
+        </span>
+      </div>
+
       <Link
         href="/reports"
         className="block rounded-2xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
@@ -370,16 +380,6 @@ function AdminView({
           </CardContent>
         </Card>
       </Link>
-
-      <div className="flex items-center justify-between gap-3 px-1 pt-1">
-        <span className="text-xs text-muted-foreground">
-          Total omzet sejak awal
-        </span>
-
-        <span className="text-sm font-bold text-success">
-          Rp{o.totalRevenue.toLocaleString('id-ID')}
-        </span>
-      </div>
     </div>
   );
 }
