@@ -1,4 +1,4 @@
-//  adminqinq/src/app/(app)/orders/[id]/actions.ts
+// coteadmin/src/app/(app)/orders/[id]/actions.ts
 "use server";
 
 import { revalidatePath } from "next/cache";

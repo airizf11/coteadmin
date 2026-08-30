@@ -1,4 +1,6 @@
 // coteadmin/src/lib/wa-templates/receipt.ts
+import { formatRupiah } from "@/lib/format";
+
 type ReceiptWaParams = {
   business: {
     name: string;
@@ -22,17 +24,17 @@ type ReceiptWaParams = {
     promoName: string | null;
     total: number;
   };
+  appUrl: string;
 };
-
-const rp = (n: number) => `Rp${n.toLocaleString("id-ID")}`;
 
 export function buildReceiptMessage(params: ReceiptWaParams): string {
   const trackLink = params.order.trackingToken
-    ? `${process.env.NEXT_PUBLIC_APP_URL}/track/${params.order.trackingToken}`
+    ? `${params.appUrl}/track/${params.order.trackingToken}`
     : null;
 
   const itemLines = params.items.map(
-    (i) => `${i.itemName}\n${i.qty} x ${rp(i.price)} = ${rp(i.subtotal)}`,
+    (i) =>
+      `${i.itemName}\n${i.qty} x ${formatRupiah(i.price)} = ${formatRupiah(i.subtotal)}`,
   );
 
   return [
@@ -45,13 +47,13 @@ export function buildReceiptMessage(params: ReceiptWaParams): string {
     ...itemLines,
     "━━━━━━━━━━━━━━━",
     "",
-    `Subtotal: ${rp(params.summary.subtotal)}`,
+    `Subtotal: ${formatRupiah(params.summary.subtotal)}`,
     ...(params.summary.discountAmount > 0
       ? [
-          `Diskon${params.summary.promoName ? ` (${params.summary.promoName})` : ""}: -${rp(params.summary.discountAmount)}`,
+          `Diskon${params.summary.promoName ? ` (${params.summary.promoName})` : ""}: -${formatRupiah(params.summary.discountAmount)}`,
         ]
       : []),
-    `*Total: ${rp(params.summary.total)}*`,
+    `*Total: ${formatRupiah(params.summary.total)}*`,
     `Bayar: ${params.order.paymentMethod}`,
     `Status: *${params.order.paymentStatus === "PAID" ? "LUNAS ✅" : "BELUM LUNAS ⚠️"}*`,
     "",

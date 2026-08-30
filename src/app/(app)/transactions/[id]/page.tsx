@@ -1,6 +1,8 @@
-// adminqinq/src/app/(app)/transactions/[id]/page.tsx
+// coteadmin/src/app/(app)/transactions/[id]/page.tsx
 import { cotebek } from '@/lib/cotebek';
 import { Card, CardContent } from '@/components/ui/card';
+import { PageHeader } from '@/components/PageHeader';
+import { formatRupiah } from '@/lib/format';
 
 type TxItem = { id: string; itemName: string; qty: number; unit: string | null; price: number; subtotal: number };
 type TxDetail = {
@@ -16,20 +18,23 @@ export default async function TransactionDetailPage({ params }: { params: Promis
   const tx = res.data;
 
   return (
-    <div className="p-4 pb-8">
-      <h1 className="text-lg font-semibold text-foreground mb-1">{tx.txNumber}</h1>
-      <p className="text-xs text-muted-foreground mb-4">{new Date(tx.createdAt).toLocaleString('id-ID')}</p>
+    <div className="p-4 pb-8 space-y-5">
+      <PageHeader
+        title={tx.txNumber}
+        subtitle={new Date(tx.createdAt).toLocaleString('id-ID')}
+        backHref="/transactions"
+      />
 
       <Card className="shadow-sm mb-4">
         <CardContent className="p-3 space-y-1 text-sm">
           <div className="flex justify-between">
             <span className="text-muted-foreground">Jumlah</span>
             <span className={tx.type === 'IN' ? 'text-success' : 'text-destructive'}>
-              {tx.type === 'IN' ? '+' : '-'}Rp{tx.amount.toLocaleString('id-ID')}
+              {tx.type === 'IN' ? '+' : '-'}{formatRupiah(tx.amount)}
             </span>
           </div>
           {tx.fee != null && tx.fee > 0 && (
-            <div className="flex justify-between"><span className="text-muted-foreground">Fee</span><span className="text-foreground">Rp{tx.fee.toLocaleString('id-ID')}</span></div>
+            <div className="flex justify-between"><span className="text-muted-foreground">Fee</span><span className="text-foreground">{formatRupiah(tx.fee)}</span></div>
           )}
           <div className="flex justify-between"><span className="text-muted-foreground">Status</span><span className="text-foreground">{tx.paymentStatus === 'PAID' ? 'Lunas' : 'Belum Lunas'}</span></div>
           {tx.teamMemberName && (
@@ -47,7 +52,7 @@ export default async function TransactionDetailPage({ params }: { params: Promis
                 <Card className="shadow-sm">
                   <CardContent className="p-3 flex justify-between items-center text-sm">
                     <span className="text-foreground">{i.itemName} x{i.qty}{i.unit ? ` ${i.unit}` : ''}</span>
-                    <span className="text-foreground">Rp{i.subtotal.toLocaleString('id-ID')}</span>
+                    <span className="text-foreground">{formatRupiah(i.subtotal)}</span>
                   </CardContent>
                 </Card>
               </li>

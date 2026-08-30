@@ -1,5 +1,4 @@
 // coteadmin/src/app/(app)/reports/page.tsx
-
 import { cotebek } from '@/lib/cotebek';
 import Link from 'next/link';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -17,6 +16,10 @@ import {
   CalendarDays,
   ArrowUpRight,
 } from 'lucide-react';
+import { formatCompactRupiah, formatRupiah } from '@/lib/format';
+import { formatDate, last30DaysRangeWIB } from '@/lib/date-range';
+import { DatePresetFilter } from '@/components/DatePresetFilter';
+import { ApiErrorFallback } from '@/components/ApiErrorFallback';
 
 type Summary = {
   revenue: number;
@@ -42,7 +45,7 @@ type PaymentMethodStat = {
   percentage: string;
 };
 
-function last30DaysRangeWIB() {
+/* function last30DaysRangeWIB() {
   const WIB_OFFSET_MS = 7 * 60 * 60 * 1000;
   const nowWIB = new Date(Date.now() + WIB_OFFSET_MS);
   const end = nowWIB.toISOString().slice(0, 10);
@@ -60,47 +63,42 @@ function formatDate(dateString: string) {
     day: 'numeric',
     month: 'short',
   });
-}
+} */
 
-function formatRupiah(value: number) {
-  return `Rp${value.toLocaleString('id-ID')}`;
-}
-
-function formatCompactRupiah(value: number) {
-  if (value === 0) return 'Rp0';
-
-  if (value >= 1_000_000) {
-    return `Rp${(value / 1_000_000).toLocaleString('id-ID', {
-      maximumFractionDigits: 1,
-    })}jt`;
-  }
-
-  if (value >= 1_000) {
-    return `Rp${(value / 1_000).toLocaleString('id-ID', {
-      maximumFractionDigits: 1,
-    })}rb`;
-  }
-
-  return formatRupiah(value);
-}
-
-export default async function ReportsPage() {
-  const { start, end } = last30DaysRangeWIB();
+export default async function ReportsPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ startDate?: string; endDate?: string }>;
+}) {
+  const params = await searchParams;
+  const defaultRange = last30DaysRangeWIB();
+  const start = params.startDate || defaultRange.start;
+  const end = params.endDate || defaultRange.end;
   const qs = `?startDate=${start}&endDate=${end}`;
 
-  const [summaryRes, topItemsRes, trendRes, paymentRes] = await Promise.all([
-    cotebek<{ data: Summary }>(`/reports/summary${qs}`),
-    cotebek<{ data: TopItem[] }>(`/reports/top-items${qs}`),
-    cotebek<{ data: TrendPoint[] }>(`/reports/sales-trend${qs}`),
-    cotebek<{ data: PaymentMethodStat[] }>(
-      `/reports/payment-methods${qs}`,
-    ),
-  ]);
+  let summary: Summary;
+  let topItems: TopItem[];
+  let trend: TrendPoint[];
+  let payments: PaymentMethodStat[];
 
-  const summary = summaryRes.data;
-  const topItems = topItemsRes.data;
-  const trend = trendRes.data;
-  const payments = paymentRes.data;
+  try {
+    const [summaryRes, topItemsRes, trendRes, paymentRes] = await Promise.all([
+      cotebek<{ data: Summary }>(`/reports/summary${qs}`),
+      cotebek<{ data: TopItem[] }>(`/reports/top-items${qs}`),
+      cotebek<{ data: TrendPoint[] }>(`/reports/sales-trend${qs}`),
+      cotebek<{ data: PaymentMethodStat[] }>(`/reports/payment-methods${qs}`),
+    ]);
+    summary = summaryRes.data;
+    topItems = topItemsRes.data;
+    trend = trendRes.data;
+    payments = paymentRes.data;
+  } catch (error) {
+    return (
+      <div className="mx-auto w-full max-w-5xl px-4 pt-8">
+        <ApiErrorFallback error={error} />
+      </div>
+    );
+  }
 
   const maxTrendValue = Math.max(
     1,
@@ -129,7 +127,7 @@ export default async function ReportsPage() {
           <div className="mt-1.5 flex items-center gap-1.5 text-xs text-muted-foreground sm:text-sm">
             <CalendarDays size={14} />
             <span>
-              30 hari terakhir · {formatDate(start)} – {formatDate(end)}
+              {formatDate(start)} – {formatDate(end)}
             </span>
           </div>
         </div>
@@ -146,6 +144,8 @@ export default async function ReportsPage() {
           />
         </Link>
       </div>
+
+      <DatePresetFilter />
 
       {/* Hero financial metric */}
       <Card className="relative overflow-hidden border-primary/20 bg-gradient-to-br from-primary/[0.12] via-card to-card shadow-md shadow-primary/5">

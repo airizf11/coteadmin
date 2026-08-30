@@ -1,4 +1,4 @@
-// adminqinq/src/components/printlab/PrintLab.tsx
+// coteadmin/src/components/printlab/PrintLab.tsx
 "use client";
 
 import { useMemo, useState } from "react";

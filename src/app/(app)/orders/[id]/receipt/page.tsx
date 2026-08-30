@@ -3,6 +3,7 @@ import { cotebek } from '@/lib/cotebek';
 // import { PrintButton } from './PrintButton';
 import { BlePrintButton } from './BlePrintButton';
 import { ReceiptWaButton } from './ReceiptWaButton';
+import { formatRupiah } from '@/lib/format';
 
 export type ReceiptData = {
   business: { name: string; address: string | null; phone: string | null; footer: string };
@@ -47,23 +48,23 @@ export default async function ReceiptPage({ params }: { params: Promise<{ id: st
             <div key={i}>
               <div>{item.itemName}</div>
               <div className="flex justify-between text-gray-600">
-                <span>{item.qty} x Rp{item.price.toLocaleString('id-ID')}</span>
-                <span>Rp{item.subtotal.toLocaleString('id-ID')}</span>
+                <span>{item.qty} x {formatRupiah(item.price)}</span>
+                <span>{formatRupiah(item.subtotal)}</span>
               </div>
             </div>
           ))}
         </div>
 
         <div className="border-t border-dashed border-black py-2 space-y-0.5">
-          <div className="flex justify-between"><span>Subtotal</span><span>Rp{r.summary.subtotal.toLocaleString('id-ID')}</span></div>
+          <div className="flex justify-between"><span>Subtotal</span><span>{formatRupiah(r.summary.subtotal)}</span></div>
           {r.summary.discountAmount > 0 && (
             <div className="flex justify-between">
               <span>Diskon{r.summary.promoName ? ` (${r.summary.promoName})` : ''}</span>
-              <span>-Rp{r.summary.discountAmount.toLocaleString('id-ID')}</span>
+              <span>-{formatRupiah(r.summary.discountAmount)}</span>
             </div>
           )}
           <div className="flex justify-between font-bold border-t border-black pt-1 mt-1">
-            <span>Total</span><span>Rp{r.summary.total.toLocaleString('id-ID')}</span>
+            <span>Total</span><span>{formatRupiah(r.summary.total)}</span>
           </div>
           <div className="flex justify-between"><span>Bayar</span><span>{r.order.paymentMethod}</span></div>
 

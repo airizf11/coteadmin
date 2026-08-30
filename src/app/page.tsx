@@ -1,4 +1,4 @@
-// adminqinq/src/app/page.tsx
+// coteadmin/src/app/page.tsx
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Package, Search, ShieldCheck } from 'lucide-react';

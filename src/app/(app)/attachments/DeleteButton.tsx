@@ -35,7 +35,7 @@ export function DeleteButton({ id }: { id: string }) {
     return (
       <button
         onClick={(e) => { e.preventDefault(); e.stopPropagation(); setConfirming(true); }}
-        className="p-1.5 rounded-md text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors"
+        className="p-1.5 rounded-md text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors cursor-pointer"
         aria-label="Hapus file"
       >
         <Trash2 size={15} />

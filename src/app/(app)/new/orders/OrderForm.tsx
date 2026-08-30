@@ -1,4 +1,4 @@
-// adminqinq/src/app/(app)/orders/new/OrderForm.tsx
+// coteadmin/src/app/(app)/new/orders/OrderForm.tsx
 'use client';
 
 import { useState, useMemo, useEffect } from 'react';
@@ -20,31 +20,89 @@ import {
   ShoppingCart, 
   ReceiptText, 
   Banknote,
-  UserCheck
+  UserCheck,
+  X,
+  CalendarClock
 } from 'lucide-react';
+import { formatRupiah } from '@/lib/format';
+import { PAYMENT_METHODS } from '@/lib/constants/payment';
+import { STATUS_CONFIG } from '@/lib/constants/order-status';
 
 type Item = { id: string; name: string; price: number; cogs: number };
 type CartLine = { itemId: string; itemName: string; qty: number; price: number; cogs: number };
 type PromoOption = { id: string; name: string; code: string; type: 'PERCENTAGE' | 'NOMINAL'; value: number };
 type TeamMember = { id: string; name: string }; // Tambahan tipe pekerja
 
-const PAYMENT_METHODS = ['Tunai', 'Transfer Bank', 'QRIS', 'E-Wallet'];
+const DRAFT_KEY = 'draft:new-order';
 
-export function OrderForm({ items, promos, teamMembers }: { items: Item[]; promos: PromoOption[]; teamMembers: TeamMember[] }) {
+export function OrderForm({ items, promos, teamMembers, canBackdate = false }: { items: Item[]; promos: PromoOption[]; teamMembers: TeamMember[]; canBackdate?: boolean }) {
   const [cart, setCart] = useState<Record<string, CartLine>>({});
   const [customer, setCustomer] = useState<CustomerMatch | null>(null);
   const [paymentMethod, setPaymentMethod] = useState(PAYMENT_METHODS[0]);
-  const [paymentStatus, setPaymentStatus] = useState<'PAID' | 'UNPAID'>('PAID');
+  const [paymentStatus, setPaymentStatus] = useState<'PAID' | 'UNPAID'>('UNPAID');
   const [teamMemberId, setTeamMemberId] = useState(''); // State kasir
   const [dueDate, setDueDate] = useState('');
+  const [orderDate, setOrderDate] = useState('');
+  const [archiveStatus, setArchiveStatus] = useState('RECEIVED');
+  const [paidAtDate, setPaidAtDate] = useState('');
   const [note, setNote] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [pending, setPending] = useState(false);
+
+  const [hasHydratedDraft, setHasHydratedDraft] = useState(false);
+  const [draftRestored, setDraftRestored] = useState(false);
 
   const [selectedPromoId, setSelectedPromoId] = useState('');
   const [appliedPromo, setAppliedPromo] = useState<PromoCheckResult | null>(null);
   const [promoError, setPromoError] = useState<string | null>(null);
   const [promoChecking, setPromoChecking] = useState(false);
+
+  // Pulihin draft (kalau ada) pas form pertama dibuka
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem(DRAFT_KEY);
+      if (raw) {
+        const draft = JSON.parse(raw);
+        if (draft.cart && Object.keys(draft.cart).length > 0) {
+          setCart(draft.cart);
+          setDraftRestored(true);
+        }
+        if (draft.customer) setCustomer(draft.customer);
+        if (draft.paymentMethod) setPaymentMethod(draft.paymentMethod);
+        if (draft.paymentStatus) setPaymentStatus(draft.paymentStatus);
+        if (draft.teamMemberId) setTeamMemberId(draft.teamMemberId);
+        if (draft.dueDate) setDueDate(draft.dueDate);
+        if (draft.orderDate) setOrderDate(draft.orderDate);
+        if (draft.archiveStatus) setArchiveStatus(draft.archiveStatus);
+        if (draft.paidAtDate) setPaidAtDate(draft.paidAtDate);
+        if (draft.note) setNote(draft.note);
+        if (draft.selectedPromoId) setSelectedPromoId(draft.selectedPromoId);
+      }
+    } catch {}
+    setHasHydratedDraft(true);
+  }, []);
+
+  // Autosave (debounce 500ms) — baru mulai nyimpen SETELAH restore di atas kelar,
+  // biar gak ke-overwrite draft lama sama state kosong pas render pertama
+  useEffect(() => {
+    if (!hasHydratedDraft) return;
+    const timer = setTimeout(() => {
+      localStorage.setItem(
+        DRAFT_KEY,
+        JSON.stringify({
+          cart, customer, paymentMethod, paymentStatus,
+          teamMemberId, dueDate, orderDate, note, selectedPromoId,
+          archiveStatus, paidAtDate,
+        }),
+      );
+    }, 500);
+    return () => clearTimeout(timer);
+  }, [hasHydratedDraft, cart, customer, paymentMethod, paymentStatus, teamMemberId, dueDate, orderDate, archiveStatus, paidAtDate, note, selectedPromoId]);
+
+  function clearDraft() {
+    localStorage.removeItem(DRAFT_KEY);
+    setDraftRestored(false);
+  }
 
   function addItem(item: Item) {
     setCart((prev) => {
@@ -90,18 +148,20 @@ export function OrderForm({ items, promos, teamMembers }: { items: Item[]; promo
     setPromoChecking(true);
     setPromoError(null);
 
-    checkPromo(promo.code, totalAmount, customer?.id).then((result) => {
-      if (cancelled) return;
-      setPromoChecking(false);
-      if (result.error) {
-        setPromoError(result.error);
-        setAppliedPromo(null);
-      } else if (result.promo) {
-        setAppliedPromo(result.promo);
-      }
-    });
+    const timer = setTimeout(() => {
+      checkPromo(promo.code, totalAmount, customer?.id).then((result) => {
+        if (cancelled) return;
+        setPromoChecking(false);
+        if (result.error) {
+          setPromoError(result.error);
+          setAppliedPromo(null);
+        } else if (result.promo) {
+          setAppliedPromo(result.promo);
+        }
+      });
+    }, 1000);
 
-    return () => { cancelled = true; };
+    return () => { cancelled = true; clearTimeout(timer); };
   }, [selectedPromoId, totalAmount, customer?.id, promos]);
 
   const finalAmount = appliedPromo ? appliedPromo.finalAmount : totalAmount;
@@ -113,10 +173,11 @@ export function OrderForm({ items, promos, teamMembers }: { items: Item[]; promo
     }
     setError(null);
     setPending(true);
+    localStorage.removeItem(DRAFT_KEY);
 
     const selectedPromo = promos.find((p) => p.id === selectedPromoId);
     
-    // Payload dengan penambahan teamMemberId
+    // Payload
     const result = await createOrder({
       items: cartLines.map((l) => ({
         itemId: l.itemId,
@@ -133,6 +194,9 @@ export function OrderForm({ items, promos, teamMembers }: { items: Item[]; promo
       note: note.trim() || undefined,
       paymentStatus,
       teamMemberId: teamMemberId || undefined, 
+      orderDate: canBackdate && orderDate ? orderDate : undefined,
+      status: canBackdate && orderDate && archiveStatus !== 'RECEIVED' ? archiveStatus : undefined,
+      paidAt: canBackdate && orderDate && paymentStatus === 'PAID' && paidAtDate ? paidAtDate : undefined,
     });
 
     setPending(false);
@@ -141,6 +205,20 @@ export function OrderForm({ items, promos, teamMembers }: { items: Item[]; promo
 
   return (
     <div className="space-y-6">
+
+      {draftRestored && (
+        <div className="flex items-center justify-between gap-2 rounded-lg border border-dashed border-primary/30 bg-primary/5 px-3 py-2 text-xs text-muted-foreground">
+          <span>Draft order sebelumnya dipulihkan.</span>
+          <button
+            type="button"
+            onClick={clearDraft}
+            className="flex items-center gap-1 text-destructive font-medium hover:underline cursor-pointer"
+          >
+            <X size={12} /> Hapus draft
+          </button>
+        </div>
+      )}
+
       <CustomerPicker onSelect={setCustomer} />
 
       {/* --- PILIHAN LAYANAN --- */}
@@ -156,7 +234,7 @@ export function OrderForm({ items, promos, teamMembers }: { items: Item[]; promo
               <CardContent className="p-4 flex flex-col justify-center items-center text-center gap-1.5 h-full select-none">
                 <div className="font-medium text-sm leading-tight text-foreground">{item.name}</div>
                 <Badge variant="secondary" className="font-bold text-[10px]">
-                  Rp{item.price.toLocaleString('id-ID')}
+                  {formatRupiah(item.price)}
                 </Badge>
               </CardContent>
             </Card>
@@ -173,7 +251,7 @@ export function OrderForm({ items, promos, teamMembers }: { items: Item[]; promo
               <li key={line.itemId} className="flex justify-between items-center bg-background p-3 rounded-xl border border-border shadow-sm">
                 <div className="flex-1">
                   <div className="font-semibold text-sm">{line.itemName}</div>
-                  <div className="text-xs text-muted-foreground">Rp{line.price.toLocaleString('id-ID')} / item</div>
+                  <div className="text-xs text-muted-foreground">{formatRupiah(line.price)} / item</div>
                 </div>
                 <div className="flex items-center gap-2">
                   <Input
@@ -207,14 +285,14 @@ export function OrderForm({ items, promos, teamMembers }: { items: Item[]; promo
               <option value="">Tanpa promo</option>
               {promos.map((p) => (
                 <option key={p.id} value={p.id}>
-                  {p.name} ({p.type === 'PERCENTAGE' ? `${p.value}%` : `Rp${p.value.toLocaleString('id-ID')}`})
+                  {p.name} ({p.type === 'PERCENTAGE' ? `${p.value}%` : formatRupiah(p.value)})
                 </option>
               ))}
             </select>
             {promoChecking && <p className="text-xs text-muted-foreground flex items-center gap-1"><Loader2 size={12} className="animate-spin"/> Mengecek promo...</p>}
             {promoError && <p className="text-xs text-destructive">{promoError}</p>}
             {appliedPromo && !promoChecking && (
-              <p className="text-xs text-success font-medium">✨ Asik! Hemat Rp{appliedPromo.discountAmount.toLocaleString('id-ID')}</p>
+              <p className="text-xs text-success font-medium">✨ Asik! Hemat {formatRupiah(appliedPromo.discountAmount)}</p>
             )}
           </div>
         )}
@@ -241,6 +319,55 @@ export function OrderForm({ items, promos, teamMembers }: { items: Item[]; promo
             <Input type="date" value={dueDate} onChange={(e) => setDueDate(e.target.value)} className="h-10 text-sm" />
           </div>
         </div>
+
+        {canBackdate && (
+          <div className="space-y-3 rounded-lg border border-dashed border-warning/40 bg-warning/5 p-3">
+            <div className="space-y-1.5">
+              <Label className="flex items-center gap-1.5 text-warning">
+                <CalendarClock size={14} /> Tanggal Order (Backdate)
+              </Label>
+              <Input
+                type="date"
+                value={orderDate}
+                onChange={(e) => setOrderDate(e.target.value)}
+                className="h-10 text-sm bg-background"
+              />
+              <p className="text-[11px] text-muted-foreground leading-tight">
+                Khusus Admin/Owner — kosongkan kalau order ini beneran terjadi sekarang. Isi cuma buat input data lampau/migrasi.
+              </p>
+            </div>
+
+            {orderDate && (
+              <div className="grid grid-cols-2 gap-3 border-t border-warning/20 pt-3">
+                <div className="space-y-1.5">
+                  <Label className="text-xs">Status Akhir</Label>
+                  <select
+                    value={archiveStatus}
+                    onChange={(e) => setArchiveStatus(e.target.value)}
+                    className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
+                  >
+                    {Object.entries(STATUS_CONFIG).map(([value, cfg]) => (
+                      <option key={value} value={value}>{cfg.label}</option>
+                    ))}
+                  </select>
+                </div>
+
+                {paymentStatus === 'PAID' && (
+                  <div className="space-y-1.5">
+                    <Label className="text-xs">Tanggal Bayar</Label>
+                    <Input
+                      type="date"
+                      value={paidAtDate}
+                      onChange={(e) => setPaidAtDate(e.target.value)}
+                      className="h-10 text-sm bg-background"
+                    />
+                    <p className="text-[10px] text-muted-foreground">Kosongkan kalau sama tanggal order.</p>
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+        )}
 
         {/* --- DILAYANI OLEH (KASIR/PEKERJA) --- */}
         {teamMembers.length > 0 && (
@@ -270,7 +397,7 @@ export function OrderForm({ items, promos, teamMembers }: { items: Item[]; promo
               type="button"
               variant={paymentStatus === 'PAID' ? 'default' : 'outline'}
               onClick={() => setPaymentStatus('PAID')}
-              className={paymentStatus === 'PAID' ? 'bg-success hover:bg-success/90 text-success-foreground text-white shadow-sm' : ''}
+              className={paymentStatus === 'PAID' ? 'bg-success hover:bg-success/90 text-success-foreground text-white shadow-sm' : 'cursor-pointer'}
             >
               {paymentStatus === 'PAID' ? <CheckCircle2 size={16} className="mr-2"/> : <Circle size={16} className="mr-2 text-muted-foreground"/>}
               Sudah Lunas
@@ -279,7 +406,7 @@ export function OrderForm({ items, promos, teamMembers }: { items: Item[]; promo
               type="button"
               variant={paymentStatus === 'UNPAID' ? 'default' : 'outline'}
               onClick={() => setPaymentStatus('UNPAID')}
-              className={paymentStatus === 'UNPAID' ? 'bg-secondary hover:bg-secondary/90 text-secondary-foreground shadow-sm' : ''}
+              className={paymentStatus === 'UNPAID' ? 'bg-secondary hover:bg-secondary/90 text-secondary-foreground shadow-sm cursor' : 'cursor-pointer'}
             >
               {paymentStatus === 'UNPAID' ? <CheckCircle2 size={16} className="mr-2"/> : <Circle size={16} className="mr-2 text-muted-foreground"/>}
               Belum Bayar
@@ -305,17 +432,17 @@ export function OrderForm({ items, promos, teamMembers }: { items: Item[]; promo
         <CardContent className="p-4 space-y-2">
           <div className="flex justify-between text-sm">
             <span className="text-muted-foreground">Subtotal</span>
-            <span className="font-medium">Rp{totalAmount.toLocaleString('id-ID')}</span>
+            <span className="font-medium">{formatRupiah(totalAmount)}</span>
           </div>
           {appliedPromo && (
             <div className="flex justify-between text-sm text-success">
               <span>Diskon</span>
-              <span className="font-medium">-Rp{appliedPromo.discountAmount.toLocaleString('id-ID')}</span>
+              <span className="font-medium">-{formatRupiah(appliedPromo.discountAmount)}</span>
             </div>
           )}
           <div className="flex justify-between items-center pt-2 mt-2 border-t border-border">
             <span className="font-semibold">Total Tagihan</span>
-            <span className="text-2xl font-bold text-primary">Rp{finalAmount.toLocaleString('id-ID')}</span>
+            <span className="text-2xl font-bold text-primary">{formatRupiah(finalAmount)}</span>
           </div>
         </CardContent>
       </Card>
@@ -331,7 +458,7 @@ export function OrderForm({ items, promos, teamMembers }: { items: Item[]; promo
         size="lg"
         onClick={handleSubmit}
         disabled={pending || cartLines.length === 0}
-        className="w-full text-base font-bold shadow-md h-12"
+        className="w-full text-base font-bold shadow-md h-12 cursor-pointer"
       >
         {pending ? <Loader2 size={20} className="animate-spin mr-2" /> : <ShoppingCart size={20} className="mr-2" />}
         {pending ? 'Memproses Order...' : 'Buat Order Sekarang'}

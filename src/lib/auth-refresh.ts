@@ -1,15 +1,19 @@
-// adminqinq/src/lib/auth-refresh.ts
+// coteadmin/src/lib/auth-refresh.ts
 const BASE_URL = process.env.COTEBEK_API_URL!;
 
 export async function callRefreshEndpoint(refreshToken: string) {
-  const res = await fetch(`${BASE_URL}/auth/refresh`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ refreshToken }),
-  });
+  try {
+    const res = await fetch(`${BASE_URL}/auth/refresh`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ refreshToken }),
+    });
 
-  if (!res.ok) return null;
+    if (!res.ok) return null;
 
-  const { data } = await res.json();
-  return data as { accessToken: string; refreshToken: string };
+    const { data } = await res.json();
+    return data as { accessToken: string; refreshToken: string };
+  } catch {
+    return null;
+  }
 }

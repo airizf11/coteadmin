@@ -1,4 +1,4 @@
-// adminqinq/src/app/(app)/profile/actions.ts
+// coteadmin/src/app/(app)/profile/actions.ts
 "use server";
 
 import { redirect } from "next/navigation";

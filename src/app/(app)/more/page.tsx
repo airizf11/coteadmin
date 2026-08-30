@@ -1,4 +1,4 @@
-// adminqinq/src/app/(app)/more/page.tsx
+// coteadmin/src/app/(app)/more/page.tsx
 import Link from 'next/link';
 import { Card } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
@@ -12,7 +12,9 @@ import {
   ClipboardList, 
   Users,
   ChevronRight, 
-  Paperclip
+  Paperclip,
+  HelpCircle,
+  Info
 } from 'lucide-react';
 
 const MENU_GROUPS = [
@@ -41,6 +43,13 @@ const MENU_GROUPS = [
       { href: '/teams', label: 'Anggota Tim', icon: Users, ready: true },
       { href: '/settings', label: 'Pengaturan Sistem', icon: Settings, ready: true },
       { href: '/profile', label: 'Profil Saya', icon: UserCircle, ready: true },
+    ]
+  },
+  {
+    title: 'Lainnya',
+    items: [
+      { href: '/help', label: 'Bantuan', icon: HelpCircle, ready: true },
+      { href: '/about', label: 'Tentang', icon: Info, ready: true },
     ]
   }
 ];

@@ -2,12 +2,12 @@
 'use client';
 
 import { useState } from 'react';
-import { useRouter, usePathname } from 'next/navigation';
-// import { Button } from '@/components/ui/button';
+import { useRouter, usePathname, useSearchParams } from 'next/navigation';
 import { Badge } from '@/components/ui/badge';
 import { SlidersHorizontal, X } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { STATUS_CONFIG } from '@/lib/constants/order-status';
+import { DatePresetFilter } from '@/components/DatePresetFilter';
 
 const ORDER_STATUSES = ['RECEIVED', 'IN_PROCESS', 'READY', 'DONE', 'CANCELLED'];
 
@@ -20,19 +20,17 @@ export function OrderFilterBar({
 }) {
   const router = useRouter();
   const pathname = usePathname();
+  const searchParams = useSearchParams();
   const [open, setOpen] = useState(false);
 
-  const activeCount = (currentStatus ? 1 : 0) + (currentPaymentStatus ? 1 : 0);
+  const hasDateFilter = !!(searchParams.get('startDate') || searchParams.get('endDate'));
+  const activeCount =
+    (currentStatus ? 1 : 0) + (currentPaymentStatus ? 1 : 0) + (hasDateFilter ? 1 : 0);
 
-  function updateFilter(key: 'status' | 'paymentStatus', value: string | null) {
-    const params = new URLSearchParams();
-    if (key === 'status') {
-      if (value) params.set('status', value);
-      if (currentPaymentStatus) params.set('paymentStatus', currentPaymentStatus);
-    } else {
-      if (currentStatus) params.set('status', currentStatus);
-      if (value) params.set('paymentStatus', value);
-    }
+  function updateStatusFilter(key: 'status' | 'paymentStatus', value: string | null) {
+    const params = new URLSearchParams(searchParams.toString());
+    if (value) params.set(key, value);
+    else params.delete(key);
     const qs = params.toString();
     router.push(qs ? `${pathname}?${qs}` : pathname);
   }
@@ -53,12 +51,12 @@ export function OrderFilterBar({
       </button>
 
       {open && (
-        <div className="space-y-3 p-3 bg-muted/30 rounded-xl border border-border animate-in fade-in slide-in-from-top-2 duration-200">
+        <div className="space-y-4 p-3 bg-muted/30 rounded-xl border border-border animate-in fade-in slide-in-from-top-2 duration-200">
           <div>
             <div className="text-xs font-semibold text-muted-foreground mb-2">Status Order</div>
             <div className="flex flex-wrap gap-2">
               <button
-                onClick={() => updateFilter('status', null)}
+                onClick={() => updateStatusFilter('status', null)}
                 className={cn(
                   'text-xs px-3 py-1.5 rounded-full border font-medium transition-colors',
                   !currentStatus
@@ -73,7 +71,7 @@ export function OrderFilterBar({
                 return (
                   <button
                     key={status}
-                    onClick={() => updateFilter('status', status)}
+                    onClick={() => updateStatusFilter('status', status)}
                     className={cn(
                       'text-xs px-3 py-1.5 rounded-full border font-medium transition-colors',
                       currentStatus === status
@@ -92,7 +90,7 @@ export function OrderFilterBar({
             <div className="text-xs font-semibold text-muted-foreground mb-2">Status Bayar</div>
             <div className="flex flex-wrap gap-2">
               <button
-                onClick={() => updateFilter('paymentStatus', null)}
+                onClick={() => updateStatusFilter('paymentStatus', null)}
                 className={cn(
                   'text-xs px-3 py-1.5 rounded-full border font-medium transition-colors',
                   !currentPaymentStatus
@@ -103,7 +101,7 @@ export function OrderFilterBar({
                 Semua
               </button>
               <button
-                onClick={() => updateFilter('paymentStatus', 'PAID')}
+                onClick={() => updateStatusFilter('paymentStatus', 'PAID')}
                 className={cn(
                   'text-xs px-3 py-1.5 rounded-full border font-medium transition-colors',
                   currentPaymentStatus === 'PAID'
@@ -114,7 +112,7 @@ export function OrderFilterBar({
                 Lunas
               </button>
               <button
-                onClick={() => updateFilter('paymentStatus', 'UNPAID')}
+                onClick={() => updateStatusFilter('paymentStatus', 'UNPAID')}
                 className={cn(
                   'text-xs px-3 py-1.5 rounded-full border font-medium transition-colors',
                   currentPaymentStatus === 'UNPAID'
@@ -125,6 +123,11 @@ export function OrderFilterBar({
                 Belum Lunas
               </button>
             </div>
+          </div>
+
+          <div>
+            <div className="text-xs font-semibold text-muted-foreground mb-2">Tanggal Order</div>
+            <DatePresetFilter />
           </div>
 
           {activeCount > 0 && (

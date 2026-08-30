@@ -30,10 +30,10 @@ function waLink(phone: string) {
 
 function genderStyle(gender: Customer['gender']) {
    if (gender === 'MALE') {
-     return { icon: User, bg: 'bg-blue-100', text: 'text-blue-600', border: 'border-l-blue-400' };
+     return { icon: User, bg: 'bg-info/10', text: 'text-info', border: 'border-l-info/40' };
    }
    if (gender === 'FEMALE') {
-     return { icon: UserRound, bg: 'bg-pink-100', text: 'text-pink-600', border: 'border-l-pink-400' };
+     return { icon: UserRound, bg: 'bg-chart-5/10', text: 'text-chart-5', border: 'border-l-chart-5/40' };
    }
    return { icon: User, bg: 'bg-primary/10', text: 'text-primary', border: 'border-l-border' };
  }
@@ -137,7 +137,7 @@ export default async function CustomersPage() {
                       rel="noopener noreferrer" 
                       className={cn(
                         buttonVariants({ variant: "ghost", size: "icon" }),
-                        "w-9 h-9 rounded-full text-green-600 hover:text-green-700 hover:bg-green-50 active:scale-95"
+                        "w-9 h-9 rounded-full text-success hover:text-success/90 hover:bg-success/10 active:scale-95"
                       )}
                       aria-label={`Chat WhatsApp dengan ${c.name}`}
                       title="Chat WhatsApp"

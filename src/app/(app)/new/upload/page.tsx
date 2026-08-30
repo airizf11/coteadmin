@@ -7,6 +7,7 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
 import { Paperclip, Loader2, CheckCircle2 } from 'lucide-react';
+import { PageHeader } from '@/components/PageHeader';
 
 export default function UploadPage() {
   const [file, setFile] = useState<File | null>(null);
@@ -42,13 +43,16 @@ export default function UploadPage() {
   }
 
   return (
-    <div className="p-4 pb-24">
-      <h1 className="text-lg font-semibold text-foreground mb-1">Upload File</h1>
-      <p className="text-sm text-muted-foreground mb-4">Kirim laporan/foto harian langsung ke sini, gak perlu lewat WA.</p>
+    <div className="p-4 pb-24 space-y-5">
+      <PageHeader
+        title="Upload File"
+        subtitle="Kirim laporan/foto harian langsung ke sini, gak perlu lewat WA."
+        backHref="/new"
+      />
 
       <Card className="shadow-sm">
         <CardContent className="p-4 space-y-4">
-          <div className="space-y-2">
+          <div className="space-y-2 cursor-pointer">
             <Label htmlFor="file">File</Label>
             <input
               ref={inputRef}
@@ -73,7 +77,7 @@ export default function UploadPage() {
           {error && <p className="text-sm text-destructive">{error}</p>}
           {success && <p className="text-sm text-success flex items-center gap-1"><CheckCircle2 size={14} /> Terupload.</p>}
 
-          <Button onClick={handleSubmit} disabled={pending} className="w-full h-11 font-medium">
+          <Button onClick={handleSubmit} disabled={pending} className="w-full h-11 font-medium cursor-pointer">
             {pending && <Loader2 size={16} className="mr-2 animate-spin" />}
             {pending ? 'Mengupload...' : 'Upload'}
           </Button>

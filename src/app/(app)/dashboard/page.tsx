@@ -16,6 +16,7 @@ import {
   Sparkles,
 } from 'lucide-react';
 import { DashboardSkeleton } from './DashboardSkeleton';
+import { formatRupiah } from '@/lib/format';
 
 type Overview = {
   ordersToday: number;
@@ -305,7 +306,7 @@ function AdminView({
           <MetricCard
             icon={<Wallet size={16} />}
             label="Omzet Hari Ini"
-            value={`Rp${o.revenueToday.toLocaleString('id-ID')}`}
+            value={formatRupiah(o.revenueToday)}
             tone="success"
           />
 
@@ -345,7 +346,7 @@ function AdminView({
         </span>
 
         <span className="text-sm font-bold text-success">
-          Rp{o.totalRevenue.toLocaleString('id-ID')}
+          {formatRupiah(o.totalRevenue)}
         </span>
       </div>
 

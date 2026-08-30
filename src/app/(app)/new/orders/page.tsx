@@ -1,4 +1,4 @@
-// adminqinq/src/app/(app)/orders/new/page.tsx
+// coteadmin/src/app/(app)/new/orders/page.tsx
 import { cotebek } from '@/lib/cotebek';
 import { OrderForm } from './OrderForm';
 import Link from 'next/link';
@@ -12,16 +12,19 @@ type TeamMember = { id: string; name: string }; // Tambahan tipe pekerja
 
 export default async function NewOrderPage() {
   // Tambahkan teamRes ke dalam Promise.all agar fetch-nya paralel (cepat)
-  const [itemsRes, promosRes, teamRes] = await Promise.all([
+  const [itemsRes, promosRes, teamRes, membership] = await Promise.all([
     cotebek<{ data: Item[] }>('/items'),
     cotebek<{ data: Promo[] }>('/promos'),
     cotebek<{ data: TeamMember[] }>('/team-members'),
+    cotebek<{ data: { isMember: boolean; role: string | null } }>('/auth/membership'),
   ]);
 
   // Promo tanpa kode gak bisa dipakai lewat mekanisme checkout sekarang, jadi disaring
   const activePromos = promosRes.data.filter(
     (p): p is Promo & { code: string } => p.isActive && !!p.code,
   );
+
+  const canBackdate = membership.data.role === 'OWNER' || membership.data.role === 'ADMIN' || membership.data.role === 'DEV';
 
   return (
     <div className="p-4 pb-24 space-y-5">
@@ -68,7 +71,7 @@ export default async function NewOrderPage() {
               items={itemsRes.data}
               promos={activePromos}
               teamMembers={teamRes.data}
-              // teamMembers={[]}
+              canBackdate={canBackdate}
           />
         </div>
       )}

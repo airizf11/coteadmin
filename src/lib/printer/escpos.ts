@@ -1,4 +1,6 @@
-// adminqinq/src/lib/printer/escpos.ts
+// coteadmin/src/lib/printer/escpos.ts
+import { formatRupiah } from "@/lib/format";
+
 export class EscPos {
   private static encoder = new TextEncoder();
 
@@ -131,7 +133,6 @@ export class EscPos {
     };
   }): Uint8Array {
     const WIDTH = 32;
-    const rp = (n: number) => `Rp${n.toLocaleString("id-ID")}`;
     const line = (left: string, right: string) => {
       const maxLeftWidth = WIDTH - right.length - 1;
       const truncatedLeft =
@@ -200,7 +201,12 @@ export class EscPos {
     for (const item of data.items) {
       parts.push(this.text(item.itemName), this.lf());
       parts.push(
-        this.text(line(`${item.qty} x ${rp(item.price)}`, rp(item.subtotal))),
+        this.text(
+          line(
+            `${item.qty} x ${formatRupiah(item.price)}`,
+            formatRupiah(item.subtotal),
+          ),
+        ),
         this.lf(),
       );
     }
@@ -208,7 +214,7 @@ export class EscPos {
 
     // Total, bayar, status, kasir
     parts.push(
-      this.text(line("Subtotal", rp(data.summary.subtotal))),
+      this.text(line("Subtotal", formatRupiah(data.summary.subtotal))),
       this.lf(),
     );
     if (data.summary.discountAmount > 0) {
@@ -216,13 +222,13 @@ export class EscPos {
         "Diskon" +
         (data.summary.promoName ? ` (${data.summary.promoName})` : "");
       parts.push(
-        this.text(line(label, `-${rp(data.summary.discountAmount)}`)),
+        this.text(line(label, `-${formatRupiah(data.summary.discountAmount)}`)),
         this.lf(),
       );
     }
     parts.push(
       this.bold(true),
-      this.text(line("Total", rp(data.summary.total))),
+      this.text(line("Total", formatRupiah(data.summary.total))),
       this.lf(),
       this.bold(false),
     );

@@ -1,7 +1,6 @@
 // coteadmin/src/app/(app)/transactions/page.tsx
 import { cotebek } from '@/lib/cotebek';
 import Link from 'next/link';
-import { FilterForm } from './FilterForm';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { buttonVariants } from '@/components/ui/button';
@@ -16,6 +15,8 @@ import {
   ArrowUpRight 
 } from 'lucide-react';
 import { MarkPaidInline } from './MarkPaidInline';
+import { formatRupiah } from '@/lib/format';
+import { TransactionFilterBar } from './TransactionFilterBar';
 
 type Transaction = {
   id: string;
@@ -36,7 +37,7 @@ type TransactionsResponse = {
   };
 };
 
-const CATEGORY_LABEL: Record<string, string> = {
+const TX_CATEGORY_LABEL: Record<string, string> = {
   SALES: 'Penjualan',
   EXPENSE: 'Pengeluaran',
   FUND_IN: 'Modal Masuk',
@@ -102,9 +103,9 @@ export default async function TransactionsPage({
               <TrendingUp size={16} />
             </div>
             <div className="text-[10px] text-muted-foreground uppercase font-semibold tracking-wider">Masuk</div>
-            <div className="text-sm font-bold text-success truncate w-full" title={`Rp${summary.totalIn.toLocaleString('id-ID')}`}>
+            <div className="text-sm font-bold text-success truncate w-full" title={formatRupiah(summary.totalIn)}>
               <span className="sr-only">Total Pemasukan: </span>
-              Rp{summary.totalIn.toLocaleString('id-ID')}
+              {formatRupiah(summary.totalIn)}
             </div>
           </CardContent>
         </Card>
@@ -116,9 +117,9 @@ export default async function TransactionsPage({
               <TrendingDown size={16} />
             </div>
             <div className="text-[10px] text-muted-foreground uppercase font-semibold tracking-wider">Keluar</div>
-            <div className="text-sm font-bold text-destructive truncate w-full" title={`Rp${summary.totalOut.toLocaleString('id-ID')}`}>
+            <div className="text-sm font-bold text-destructive truncate w-full" title={formatRupiah(summary.totalOut)}>
               <span className="sr-only">Total Pengeluaran: </span>
-              Rp{summary.totalOut.toLocaleString('id-ID')}
+              {formatRupiah(summary.totalOut)}
             </div>
           </CardContent>
         </Card>
@@ -130,16 +131,16 @@ export default async function TransactionsPage({
               <Wallet size={16} />
             </div>
             <div className="text-[10px] text-muted-foreground uppercase font-semibold tracking-wider">Saldo</div>
-            <div className="text-sm font-bold text-primary truncate w-full" title={`Rp${summary.balance.toLocaleString('id-ID')}`}>
+            <div className="text-sm font-bold text-primary truncate w-full" title={formatRupiah(summary.balance)}>
               <span className="sr-only">Sisa Saldo: </span>
-              Rp{summary.balance.toLocaleString('id-ID')}
+              {formatRupiah(summary.balance)}
             </div>
           </CardContent>
         </Card>
       </div>
 
       {/* 3. KOMPONEN FILTER TRANSAKSI */}
-      <FilterForm startDate={params.startDate} endDate={params.endDate} type={params.type} />
+      <TransactionFilterBar currentType={params.type} />
 
       {/* 4. EMPTY STATE */}
       {data.length === 0 && (
@@ -158,7 +159,7 @@ export default async function TransactionsPage({
       <ul className="space-y-3" aria-label="Daftar Riwayat Transaksi">
         {data.map((tx) => {
           const isIncome = tx.type === 'IN';
-          const catLabel = CATEGORY_LABEL[tx.category] || tx.category;
+          const catLabel = TX_CATEGORY_LABEL[tx.category] || tx.category;
 
           return (
             <li key={tx.id}>
@@ -212,13 +213,13 @@ export default async function TransactionsPage({
                       )}
                     >
                       <span className="sr-only">{isIncome ? 'Pemasukan sebesar' : 'Pengeluaran sebesar'}</span>
-                      {isIncome ? '+' : '-'}Rp{tx.amount.toLocaleString('id-ID')}
+                      {isIncome ? '+' : '-'}{formatRupiah(tx.amount)}
                     </div>
 
                     {/* Tampilan Fee Admin Opsional */}
                     {tx.fee != null && tx.fee > 0 && (
                       <div className="text-[10px] text-warning font-medium mt-0.5" aria-label={`Dipotong biaya admin Rp${tx.fee}`}>
-                        Fee: Rp{tx.fee.toLocaleString('id-ID')}
+                        Fee: {formatRupiah(tx.fee)}
                       </div>
                     )}
                     

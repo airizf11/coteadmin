@@ -1,5 +1,5 @@
 // coteadmin/src/lib/branding.ts
-import { cotebek } from "@/lib/cotebek";
+import { cotebek, cotebekPublic } from "@/lib/cotebek";
 import {
   Home,
   ClipboardList,
@@ -28,10 +28,15 @@ export const DEFAULT_BRANDING: Branding = {
 
 export async function getBranding(): Promise<Branding> {
   try {
-    const res = await cotebek<{ data: Partial<Branding> }>(
+    /* const res = await cotebekPublic<{ data: Partial<Branding> }>(
       "/app-settings/public/branding",
-      { requireAuth: false },
+      300, // refresh tiap 60 detik
+    ); */
+
+    const res = await cotebekPublic<{ data: Partial<Branding> }>(
+      "/app-settings/public/branding",
     );
+
     const clean = Object.fromEntries(
       Object.entries(res.data).filter(([, v]) => v !== null && v !== undefined),
     );

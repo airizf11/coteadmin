@@ -1,4 +1,4 @@
-// adminqinq/src/app/layout.tsx
+// coteadmin/src/app/layout.tsx
 import { Providers } from './providers';
 import './globals.css';
 import { Metadata } from 'next';
@@ -21,12 +21,31 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
-export const dynamic = 'force-dynamic';
+// export const dynamic = 'force-dynamic';
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const b = await getBranding();
   return (
-    <html lang="id" className={cn("font-sans", inter.variable)}>
+    <html lang="id" className={cn("font-sans", inter.variable)}
+    suppressHydrationWarning
+    >
+
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function() {
+                try {
+                  var stored = localStorage.getItem('theme');
+                  var isDark = stored ? stored === 'dark' : window.matchMedia('(prefers-color-scheme: dark)').matches;
+                  if (isDark) document.documentElement.classList.add('dark');
+                } catch (e) {}
+              })();
+            `,
+          }}
+        />
+      </head>
+
       <body style={{ '--primary': b.primaryColor } as React.CSSProperties}>
         <Providers>{children}</Providers>
         <Toaster richColors position="top-center" />

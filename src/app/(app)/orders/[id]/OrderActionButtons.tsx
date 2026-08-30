@@ -8,52 +8,17 @@ import { Card, CardContent } from '@/components/ui/card';
 import { toast } from 'sonner';
 import { 
   MessageCircle, 
-  CheckCircle2, 
-  XCircle, 
-  Play, 
   Banknote, 
   Loader2, 
   CheckSquare,
-  PackageCheck
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { buildOrderUpdateMessage } from '@/lib/wa-templates';
+import { STATUS_CONFIG, TRANSITIONS } from '@/lib/constants/order-status';
+import { PAYMENT_METHODS } from '@/lib/constants/payment';
+import { waLink } from '@/lib/whatsapp';
 
 // --- DATA & CONFIG ---
-const PAYMENT_METHODS = ['Tunai', 'Transfer Bank', 'QRIS', 'E-Wallet'];
-
-const TRANSITIONS: Record<string, { status: string; label: string; danger?: boolean; icon: any }[]> = {
-  RECEIVED: [
-    { status: 'IN_PROCESS', label: 'Mulai Proses', icon: Play },
-    { status: 'CANCELLED', label: 'Batalkan Order', danger: true, icon: XCircle },
-  ],
-  IN_PROCESS: [
-    { status: 'READY', label: 'Siap Diambil', icon: PackageCheck },
-    { status: 'CANCELLED', label: 'Batalkan Order', danger: true, icon: XCircle },
-  ],
-  READY: [
-    { status: 'DONE', label: 'Selesai / Sudah Diambil', icon: CheckCircle2 },
-    { status: 'CANCELLED', label: 'Batalkan Order', danger: true, icon: XCircle },
-  ],
-  DONE: [],
-  CANCELLED: [],
-};
-
-const STATUS_LABEL: Record<string, string> = {
-  RECEIVED: 'Diterima',
-  IN_PROCESS: 'Diproses',
-  READY: 'Siap Diambil',
-  DONE: 'Selesai',
-  CANCELLED: 'Dibatalkan',
-};
-
-// --- HELPER FUNCTION ---
-function waLink(phone: string, text: string) {
-  const digits = phone.replace(/\D/g, '');
-  const normalized = digits.startsWith('0') ? '62' + digits.slice(1) : digits;
-  return `https://wa.me/${normalized}?text=${encodeURIComponent(text)}`;
-}
-
 // --- MAIN COMPONENT ---
 type OrderActionButtonsProps = {
   orderId: string;
@@ -97,30 +62,35 @@ export function OrderActionButtons(props: OrderActionButtonsProps) {
     if (result?.error) {
       toast.error(result.error);
     } else {
-      toast.success(`Status diubah ke ${STATUS_LABEL[status]}`);
+      toast.success(`Status diubah ke ${STATUS_CONFIG[status]?.label ?? status}`);
     }
   }
 
   // 3. Generate WA Message
   const steps = [
-    { label: STATUS_LABEL.RECEIVED, timestamp: props.createdAt },
+    { label: STATUS_CONFIG.RECEIVED.label, timestamp: props.createdAt },
     ...props.statusHistory
       .filter((h) => h.status && h.status !== 'RECEIVED')
-      .map((h) => ({ label: STATUS_LABEL[h.status!] ?? h.status!, timestamp: h.timestamp })),
+      .map((h) => ({ label: STATUS_CONFIG[h.status!]?.label ?? h.status!, timestamp: h.timestamp })),
   ];
   
   const timelineText = steps
     .map((s) => `✓ ${s.label} - ${new Date(s.timestamp).toLocaleString('id-ID', { dateStyle: 'medium', timeStyle: 'short' })}`)
     .join('\n');
 
-  const waMessage = buildOrderUpdateMessage({
-   customerName: props.customerName,
-   orderNumber: props.orderNumber,
-   trackingToken: props.trackingToken,
-   currentStatus: props.currentStatus,
-   paymentStatus: props.paymentStatus,
-   timelineText,
- });
+  function handleSendWa() {
+    if (!props.customerPhone) return;
+    const message = buildOrderUpdateMessage({
+      customerName: props.customerName,
+      orderNumber: props.orderNumber,
+      trackingToken: props.trackingToken,
+      currentStatus: props.currentStatus,
+      paymentStatus: props.paymentStatus,
+      timelineText,
+      appUrl: window.location.origin,
+    });
+    window.open(waLink(props.customerPhone, message), '_blank', 'noopener,noreferrer');
+  }
 
   const statusOptions = TRANSITIONS[props.currentStatus] ?? [];
 
@@ -196,25 +166,22 @@ export function OrderActionButtons(props: OrderActionButtonsProps) {
 
       {/* --- WHATSAPP BUTTON --- */}
       {props.customerPhone && (
-  <a 
-    href={waLink(props.customerPhone, waMessage)} 
-    target="_blank" 
-    rel="noopener noreferrer"
-    // Tambahkan 'cursor-pointer' dan 'inline-flex' agar hover-nya terasa seperti link/tombol
+  <button
+    onClick={handleSendWa}
     className={cn(
       buttonVariants({ variant: "default" }),
-      "w-full h-11 bg-green-600 hover:bg-green-700 text-white shadow-sm cursor-pointer"
+      "w-full h-11 bg-success hover:bg-success/90 text-success-foreground shadow-sm cursor-pointer"
     )}
   >
     <MessageCircle size={18} className="mr-2" />
     Kirim Update via WhatsApp
-  </a>
+  </button>
 )}
 
       {/* Teks Bantuan jika Order sudah final */}
       {statusOptions.length === 0 && (
         <p className="text-xs text-center text-muted-foreground pt-2 pb-1 italic">
-          Order ini telah {STATUS_LABEL[props.currentStatus]?.toLowerCase()} dan difinalisasi.
+          Order ini telah {STATUS_CONFIG[props.currentStatus]?.label?.toLowerCase()} dan difinalisasi.
         </p>
       )}
 

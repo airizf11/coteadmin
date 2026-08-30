@@ -1,6 +1,5 @@
 // coteadmin/src/app/(app)/reports/advanced/page.tsx
 import { cotebek } from '@/lib/cotebek';
-import { FilterForm } from './FilterForm';
 import Link from 'next/link';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -22,6 +21,10 @@ import {
   BarChart3,
 } from 'lucide-react';
 import { ExportButton } from './ExportButton';
+import { formatCompactRupiah, formatRupiah } from '@/lib/format';
+import { formatDate, last30DaysRangeWIB } from '@/lib/date-range';
+import { AdvancedReportFilterBar } from './AdvancedReportFilterBar';
+import { ApiErrorFallback } from '@/components/ApiErrorFallback';
 
 type Summary = {
   revenue: number;
@@ -67,7 +70,7 @@ type ExpenseByCategory = {
   count: number;
 };
 
-const CATEGORY_LABEL: Record<string, string> = {
+const EXPENSE_CATEGORY_LABEL: Record<string, string> = {
   EXPENSE: 'Operasional',
   CAPEX: 'Aset/Modal',
   ADJUSTMENT: 'Penyesuaian',
@@ -75,7 +78,7 @@ const CATEGORY_LABEL: Record<string, string> = {
   OTHER: 'Lainnya',
 };
 
-function last30DaysRangeWIB() {
+/* function last30DaysRangeWIB() {
   const WIB_OFFSET_MS = 7 * 60 * 60 * 1000;
   const nowWIB = new Date(Date.now() + WIB_OFFSET_MS);
   const end = nowWIB.toISOString().slice(0, 10);
@@ -94,7 +97,7 @@ function formatDate(dateString: string) {
     day: 'numeric',
     month: 'short',
   });
-}
+} */
 
 function getChangeData(current: number, previous: number) {
   if (previous === 0) return null;
@@ -172,67 +175,55 @@ export default async function AdvancedReportsPage({
 
   const qs = `?startDate=${startDate}&endDate=${endDate}`;
 
-  const [
-    summaryRes,
-    topItemsRes,
-    trendRes,
-    paymentRes,
-    promoRes,
-    netProfitRes,
-    expenseCategoryRes,
-  ] = await Promise.all([
-    cotebek<{ data: Summary }>(`/reports/summary${qs}`),
-    cotebek<{ data: TopItem[] }>(`/reports/top-items${qs}`),
-    cotebek<{ data: TrendPoint[] }>(`/reports/sales-trend${qs}`),
-    cotebek<{ data: PaymentMethodStat[] }>(
-      `/reports/payment-methods${qs}`,
-    ),
-    cotebek<{ data: PromoBudget }>(
-      `/reports/promo-budget${qs}`,
-    ),
-    cotebek<{ data: NetProfit }>(
-      `/reports/net-profit${qs}`,
-    ),
-    cotebek<{ data: ExpenseByCategory[] }>(
-      `/reports/expense-by-category${qs}`,
-    ),
-  ]);
-
+  let summary: Summary;
+  let topItems: TopItem[];
+  let trend: TrendPoint[];
+  let payments: PaymentMethodStat[];
+  let promo: PromoBudget;
+  let netProfit: NetProfit;
+  let expenseByCategory: ExpenseByCategory[];
   let compareSummary: Summary | null = null;
   let comparePromo: PromoBudget | null = null;
   let compareNetProfit: NetProfit | null = null;
 
-  if (hasCompare) {
-    const compareQs = `?startDate=${compareStartDate}&endDate=${compareEndDate}`;
-
+  try {
     const [
-      cSummaryRes,
-      cPromoRes,
-      cNetProfitRes,
+      summaryRes, topItemsRes, trendRes, paymentRes, promoRes, netProfitRes, expenseCategoryRes,
     ] = await Promise.all([
-      cotebek<{ data: Summary }>(
-        `/reports/summary${compareQs}`,
-      ),
-      cotebek<{ data: PromoBudget }>(
-        `/reports/promo-budget${compareQs}`,
-      ),
-      cotebek<{ data: NetProfit }>(
-        `/reports/net-profit${compareQs}`,
-      ),
+      cotebek<{ data: Summary }>(`/reports/summary${qs}`),
+      cotebek<{ data: TopItem[] }>(`/reports/top-items${qs}`),
+      cotebek<{ data: TrendPoint[] }>(`/reports/sales-trend${qs}`),
+      cotebek<{ data: PaymentMethodStat[] }>(`/reports/payment-methods${qs}`),
+      cotebek<{ data: PromoBudget }>(`/reports/promo-budget${qs}`),
+      cotebek<{ data: NetProfit }>(`/reports/net-profit${qs}`),
+      cotebek<{ data: ExpenseByCategory[] }>(`/reports/expense-by-category${qs}`),
     ]);
+    summary = summaryRes.data;
+    topItems = topItemsRes.data;
+    trend = trendRes.data;
+    payments = paymentRes.data;
+    promo = promoRes.data;
+    netProfit = netProfitRes.data;
+    expenseByCategory = expenseCategoryRes.data;
 
-    compareSummary = cSummaryRes.data;
-    comparePromo = cPromoRes.data;
-    compareNetProfit = cNetProfitRes.data;
+    if (hasCompare) {
+      const compareQs = `?startDate=${compareStartDate}&endDate=${compareEndDate}`;
+      const [cSummaryRes, cPromoRes, cNetProfitRes] = await Promise.all([
+        cotebek<{ data: Summary }>(`/reports/summary${compareQs}`),
+        cotebek<{ data: PromoBudget }>(`/reports/promo-budget${compareQs}`),
+        cotebek<{ data: NetProfit }>(`/reports/net-profit${compareQs}`),
+      ]);
+      compareSummary = cSummaryRes.data;
+      comparePromo = cPromoRes.data;
+      compareNetProfit = cNetProfitRes.data;
+    }
+  } catch (error) {
+    return (
+      <div className="mx-auto w-full max-w-5xl px-4 pt-8">
+        <ApiErrorFallback error={error} />
+      </div>
+    );
   }
-
-  const summary = summaryRes.data;
-  const topItems = topItemsRes.data;
-  const trend = trendRes.data;
-  const payments = paymentRes.data;
-  const promo = promoRes.data;
-  const netProfit = netProfitRes.data;
-  const expenseByCategory = expenseCategoryRes.data;
 
   const maxRevenue = Math.max(
     1,
@@ -300,16 +291,10 @@ export default async function AdvancedReportsPage({
       </div>
 
       {/* Filters */}
-      <Card className="overflow-hidden border-border shadow-sm">
-        <CardContent className="p-4">
-          <FilterForm
-            startDate={startDate}
-            endDate={endDate}
-            compareStartDate={compareStartDate}
-            compareEndDate={compareEndDate}
-          />
-        </CardContent>
-      </Card>
+     <AdvancedReportFilterBar
+        compareStartDate={compareStartDate}
+        compareEndDate={compareEndDate}
+      />
 
       {/* KPI */}
       <div className="grid grid-cols-2 gap-3">
@@ -330,7 +315,7 @@ export default async function AdvancedReportsPage({
 
             <div className="flex flex-wrap items-baseline gap-1">
               <span className="text-lg font-bold tracking-tight text-chart-1 sm:text-xl">
-                Rp{summary.revenue.toLocaleString('id-ID')}
+                {formatRupiah(summary.revenue)}
               </span>
 
               {hasCompare && compareSummary && (
@@ -361,7 +346,7 @@ export default async function AdvancedReportsPage({
 
             <div className="flex flex-wrap items-baseline gap-1">
               <span className="text-lg font-bold tracking-tight text-chart-2 sm:text-xl">
-                Rp{summary.grossProfit.toLocaleString('id-ID')}
+                {formatRupiah(summary.grossProfit)}
               </span>
 
               {hasCompare && compareSummary && (
@@ -389,7 +374,7 @@ export default async function AdvancedReportsPage({
             </div>
 
             <div className="text-lg font-bold tracking-tight text-foreground sm:text-xl">
-              Rp{summary.cogs.toLocaleString('id-ID')}
+              {formatRupiah(summary.cogs)}
             </div>
 
             <div className="mt-0.5 text-[10px] text-muted-foreground">
@@ -452,7 +437,7 @@ export default async function AdvancedReportsPage({
             </span>
 
             <span className="font-semibold text-foreground">
-              Rp{netProfit.revenue.toLocaleString('id-ID')}
+              {formatRupiah(netProfit.revenue)}
             </span>
           </div>
 
@@ -462,7 +447,7 @@ export default async function AdvancedReportsPage({
             </span>
 
             <span className="font-medium">
-              -Rp{netProfit.cogs.toLocaleString('id-ID')}
+              -{formatRupiah(netProfit.cogs)}
             </span>
           </div>
 
@@ -472,7 +457,7 @@ export default async function AdvancedReportsPage({
             </span>
 
             <span className="font-bold text-foreground">
-              Rp{netProfit.grossProfit.toLocaleString('id-ID')}
+              {formatRupiah(netProfit.grossProfit)}
             </span>
           </div>
 
@@ -482,7 +467,7 @@ export default async function AdvancedReportsPage({
             </span>
 
             <span className="font-medium">
-              -Rp{netProfit.operatingExpense.toLocaleString('id-ID')}
+              -{formatRupiah(netProfit.operatingExpense)}
             </span>
           </div>
 
@@ -508,7 +493,7 @@ export default async function AdvancedReportsPage({
                       : 'text-destructive',
                   )}
                 >
-                  Rp{netProfit.netProfit.toLocaleString('id-ID')}
+                  {formatRupiah(netProfit.netProfit)}
                 </div>
               </div>
 
@@ -544,7 +529,7 @@ export default async function AdvancedReportsPage({
             </span>
 
             <span className="font-bold text-chart-4">
-              Rp{promo.totalDiscount.toLocaleString('id-ID')}
+              {formatRupiah(promo.totalDiscount)}
             </span>
           </div>
 
@@ -620,7 +605,7 @@ export default async function AdvancedReportsPage({
                   (e.total / maxExpense) * 100;
 
                 const catLabel =
-                  CATEGORY_LABEL[e.category] ?? e.category;
+                  EXPENSE_CATEGORY_LABEL[e.category] ?? e.category;
 
                 return (
                   <div
@@ -639,7 +624,7 @@ export default async function AdvancedReportsPage({
                       </div>
 
                       <span className="text-xs font-bold text-chart-5">
-                        Rp{e.total.toLocaleString('id-ID')}
+                        {formatRupiah(e.total)}
                       </span>
                     </div>
 
@@ -704,11 +689,7 @@ export default async function AdvancedReportsPage({
                     </div>
 
                     <span className="w-[75px] shrink-0 text-right text-xs font-bold">
-                      {t.revenue > 0
-                        ? `Rp${(
-                            t.revenue / 1000
-                          ).toLocaleString('id-ID')}k`
-                        : '0'}
+                      {t.revenue > 0 ? formatCompactRupiah(t.revenue) : '0'}
                     </span>
                   </div>
                 );

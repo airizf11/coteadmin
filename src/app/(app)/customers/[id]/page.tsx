@@ -28,10 +28,10 @@ type CustomerDetail = {
 
 // Kita samakan warnanya dengan halaman Order agar konsisten
 const STATUS_CONFIG: Record<string, { label: string; color: string }> = {
-  RECEIVED: { label: 'Diterima', color: 'bg-blue-100 text-blue-700 border-blue-200' },
+  RECEIVED: { label: 'Diterima', color: 'bg-info/10 text-info border-info/20' },
   IN_PROCESS: { label: 'Diproses', color: 'bg-primary/10 text-primary border-primary/20' },
   READY: { label: 'Siap Diambil', color: 'bg-secondary/20 text-secondary-foreground border-secondary/30' },
-  DONE: { label: 'Selesai', color: 'bg-emerald-100 text-emerald-700 border-emerald-200' },
+  DONE: { label: 'Selesai', color: 'bg-success/10 text-success border-success/20' },
   CANCELLED: { label: 'Dibatalkan', color: 'bg-destructive/10 text-destructive border-destructive/20' },
 };
 
@@ -112,12 +112,12 @@ export default async function CustomerDetailPage({ params }: { params: Promise<{
             {c.notes && (
               <div className={cn(
                 "p-3 rounded-lg text-sm",
-                (c.email || fullAddress) ? "bg-yellow-50/50 border border-yellow-100" : ""
+                (c.email || fullAddress) ? "bg-warning/5 border border-warning/20" : ""
               )}>
-                <div className="flex items-center gap-1.5 text-yellow-700 font-semibold text-xs uppercase tracking-wider mb-1">
+                <div className="flex items-center gap-1.5 text-warning font-semibold text-xs uppercase tracking-wider mb-1">
                   <StickyNote size={14} aria-hidden="true" /> Catatan Khusus
                 </div>
-                <p className="text-yellow-900 italic leading-relaxed">"{c.notes}"</p>
+                <p className="text-foreground italic leading-relaxed">"{c.notes}"</p>
               </div>
             )}
 
@@ -139,7 +139,7 @@ export default async function CustomerDetailPage({ params }: { params: Promise<{
         ) : (
           <ul className="space-y-2" aria-label="Daftar riwayat order">
             {c.orderHistory.map((o) => {
-              const statusVisual = STATUS_CONFIG[o.status] || { label: o.status, color: 'bg-gray-100 text-gray-700 border-gray-200' };
+              const statusVisual = STATUS_CONFIG[o.status] || { label: o.status, color: 'bg-muted text-muted-foreground border-border' };
 
               return (
                 <li key={o.id}>

@@ -15,6 +15,7 @@ import {
 } from 'lucide-react';
 import { OrderActionButtons } from './OrderActionButtons';
 import { STATUS_CONFIG } from '@/lib/constants/order-status';
+import { formatRupiah } from '@/lib/format';
 
 type OrderItem = { id: string; itemName: string; qty: number; subtotal: number };
 type OrderDetail = {
@@ -74,7 +75,7 @@ export default async function OrderDetailPage({ params }: { params: Promise<{ id
           {statusVisual.label}
         </Badge>
         {order.paymentStatus === 'PAID' ? (
-          <Badge variant="outline" className="px-3 py-1 font-medium bg-emerald-50 text-emerald-700 border-emerald-200">
+          <Badge variant="outline" className="px-3 py-1 font-medium bg-success/10 text-success border-success/20">
             Lunas
           </Badge>
         ) : (
@@ -147,7 +148,7 @@ export default async function OrderDetailPage({ params }: { params: Promise<{ id
                 <span className="text-foreground">
                   {i.itemName} <span className="text-muted-foreground ml-1">x{i.qty}</span>
                 </span>
-                <span className="font-medium">Rp{i.subtotal.toLocaleString('id-ID')}</span>
+                <span className="font-medium">{formatRupiah(i.subtotal)}</span>
               </li>
             ))}
           </ul>
@@ -156,19 +157,19 @@ export default async function OrderDetailPage({ params }: { params: Promise<{ id
           <div className="border-t border-dashed border-border pt-3 space-y-1.5 text-sm">
             <div className="flex justify-between">
               <span className="text-muted-foreground">Subtotal</span>
-              <span>Rp{order.totalAmount.toLocaleString('id-ID')}</span>
+              <span>{formatRupiah(order.totalAmount)}</span>
             </div>
             {order.discountAmount > 0 && (
-              <div className="flex justify-between text-emerald-600">
+              <div className="flex justify-between text-success">
                 <span>Diskon {order.promoCode && `(${order.promoCode})`}</span>
-                <span>-Rp{order.discountAmount.toLocaleString('id-ID')}</span>
+                <span>-{formatRupiah(order.discountAmount)}</span>
               </div>
             )}
             
             <div className="flex justify-between items-center pt-2 mt-2 border-t border-border">
               <span className="font-semibold text-foreground">Total Tagihan</span>
               <span className="text-lg font-bold text-primary">
-                Rp{order.finalAmount.toLocaleString('id-ID')}
+                {formatRupiah(order.finalAmount)}
               </span>
             </div>
           </div>

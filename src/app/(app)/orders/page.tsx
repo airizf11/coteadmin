@@ -4,10 +4,12 @@ import { cotebek } from '@/lib/cotebek';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { buttonVariants } from '@/components/ui/button';
-import { Plus, ChevronRight, ReceiptText, SlidersHorizontal } from 'lucide-react';
+import { Plus, ChevronRight, ReceiptText, SlidersHorizontal, User, CalendarClock } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { STATUS_CONFIG } from '@/lib/constants/order-status';
 import { OrderFilterBar } from './OrderFilterBar';
+import { formatRupiah } from '@/lib/format';
+import { formatDate } from '@/lib/date-range';
 
 type Order = {
   id: string;
@@ -15,18 +17,24 @@ type Order = {
   status: string;
   finalAmount: number;
   paymentStatus: 'PAID' | 'UNPAID';
+  customerName: string | null;
+  dueDate: string | null;
 };
 
 export default async function OrdersPage({
   searchParams,
 }: {
-  searchParams: Promise<{ status?: string; paymentStatus?: string }>;
+  searchParams: Promise<{ status?: string; paymentStatus?: string; startDate?: string; endDate?: string }>;
 }) {
   const params = await searchParams;
 
   const queryParts: string[] = [];
   if (params.status) queryParts.push(`status=${params.status}`);
   if (params.paymentStatus) queryParts.push(`paymentStatus=${params.paymentStatus}`);
+
+  if (params.startDate) queryParts.push(`startDate=${params.startDate}`);
+  if (params.endDate) queryParts.push(`endDate=${params.endDate}`);
+
   const queryString = queryParts.length > 0 ? `?${queryParts.join('&')}` : '';
 
   const res = await cotebek<{ data: Order[] }>(`/orders${queryString}`);
@@ -86,8 +94,24 @@ export default async function OrdersPage({
               <Card className="shadow-sm border-border group-hover:border-primary/40 group-hover:shadow-md transition-all duration-200">
                 <CardContent className="p-4 flex flex-col gap-3">
                   <div className="flex justify-between items-start">
-                    <div className="font-semibold text-foreground tracking-wide">
-                      {o.orderNumber}
+                    <div>
+                      <div className="font-semibold text-foreground tracking-wide">
+                        {o.orderNumber}
+                      </div>
+                      {(o.customerName || o.dueDate) && (
+                        <div className="flex items-center gap-3 mt-1 text-xs text-muted-foreground">
+                          {o.customerName && (
+                            <span className="flex items-center gap-1">
+                              <User size={12} /> {o.customerName}
+                            </span>
+                          )}
+                          {o.dueDate && (
+                            <span className="flex items-center gap-1">
+                              <CalendarClock size={12} /> {formatDate(o.dueDate)}
+                            </span>
+                          )}
+                        </div>
+                      )}
                     </div>
                     {o.paymentStatus === 'UNPAID' ? (
                       <Badge variant="destructive" className="text-[10px] px-2 py-0.5 rounded-full shadow-none font-medium">
@@ -112,7 +136,7 @@ export default async function OrdersPage({
                       <div className="text-right">
                         <div className="text-xs text-muted-foreground mb-0.5">Total Biaya</div>
                         <div className="font-bold text-primary">
-                          Rp{o.finalAmount.toLocaleString('id-ID')}
+                          {formatRupiah(o.finalAmount)}
                         </div>
                       </div>
                       <ChevronRight size={20} className="text-muted-foreground opacity-50 group-hover:text-primary group-hover:translate-x-1 transition-all" />

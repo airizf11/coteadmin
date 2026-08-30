@@ -1,10 +1,11 @@
-// adminqinq/src/app/(app)/transactions/MarkPaidInline.tsx
+// coteadmin/src/app/(app)/transactions/MarkPaidInline.tsx
 'use client';
 
 import { useState } from 'react';
 import { markTransactionPaid } from './actions';
 import { Button } from '@/components/ui/button';
 import { CheckCircle2, Loader2 } from 'lucide-react';
+import { toast } from 'sonner';
 
 export function MarkPaidInline({ id }: { id: string }) {
   const [pending, setPending] = useState(false);
@@ -12,9 +13,12 @@ export function MarkPaidInline({ id }: { id: string }) {
   async function handleClick() {
     setPending(true);
     try {
-      await markTransactionPaid(id);
-    } catch (error) {
-      console.error('Gagal menandai lunas:', error);
+      const result = await markTransactionPaid(id);
+      if (result?.error) {
+        toast.error(result.error);
+      }
+    } catch {
+      toast.error('Gagal menandai lunas.');
     } finally {
       setPending(false);
     }
@@ -26,13 +30,13 @@ export function MarkPaidInline({ id }: { id: string }) {
       disabled={pending} 
       variant="outline"
       size="sm"
-      className="h-5 px-1.5 py-0 text-[9px] font-semibold border-orange-300 text-orange-700 bg-orange-50 hover:bg-orange-100 hover:text-orange-800 transition-colors shadow-none shrink-0 cursor-pointer"
+      className="h-5 px-1.5 py-0 text-[9px] font-semibold border-warning/30 text-warning bg-warning/10 hover:bg-warning/20 transition-colors shadow-none shrink-0 cursor-pointer"
       title="Tandai sebagai Lunas"
     >
       {pending ? (
         <Loader2 size={10} className="animate-spin mr-1" />
       ) : (
-        <CheckCircle2 size={10} className="mr-1 text-orange-600" />
+        <CheckCircle2 size={10} className="mr-1 text-warning" />
       )}
       {pending ? 'Proses...' : 'Lunasi'}
     </Button>

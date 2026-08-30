@@ -1,4 +1,4 @@
-// adminqinq/src/app/(app)/orders/new/promo-actions.ts
+// coteadmin/src/app/(app)/new/orders/promo-actions.ts
 "use server";
 
 import { cotebek } from "@/lib/cotebek";

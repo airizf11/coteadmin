@@ -1,11 +1,12 @@
-// adminqinq/src/app/(app)/layout.tsx
+// coteadmin/src/app/(app)/layout.tsx
 import Link from 'next/link';
-import { Zap } from 'lucide-react';
+import { Store, Zap } from 'lucide-react';
 import { getBranding, NAV_PRESETS } from '@/lib/branding';
 import { cotebek } from '@/lib/cotebek';
 import { NoAccessScreen } from './NoAccessScreen';
+import { ThemeToggle } from '@/components/ThemeToggle';
 
-export const dynamic = 'force-dynamic';
+// export const dynamic = 'force-dynamic';
 
 export default async function AppLayout({ children }: { children: React.ReactNode }) {
   const b = await getBranding();
@@ -22,9 +23,15 @@ export default async function AppLayout({ children }: { children: React.ReactNod
       */}
       <header className="sticky top-0 z-50 w-full border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 print:hidden">
         <div className="container mx-auto flex h-14 items-center justify-between px-4">
-          <div className="font-heading font-bold text-xl text-primary tracking-tight">
-            {b.businessName}
-          </div>
+          <Link href="/dashboard" className="flex items-center gap-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-md">
+            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10 text-primary shrink-0">
+              <Store size={18} />
+            </div>
+            <span className="font-heading font-bold text-xl text-primary tracking-tight truncate">
+              {b.businessName} by CoTE
+            </span>
+          </Link>
+          <ThemeToggle />
           {/* Tempat untuk letak Toggle Bahasa nanti */}
         </div>
       </header>

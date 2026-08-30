@@ -4,6 +4,7 @@
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { FileSpreadsheet, FileText, Loader2 } from 'lucide-react';
+import { toast } from 'sonner';
 
 export function ExportButton({ startDate, endDate, compareStartDate, compareEndDate }: {
   startDate: string; endDate: string; compareStartDate?: string; compareEndDate?: string;
@@ -28,7 +29,7 @@ export function ExportButton({ startDate, endDate, compareStartDate, compareEndD
       a.click();
       URL.revokeObjectURL(url);
     } catch (err) {
-      alert(err instanceof Error ? err.message : 'Gagal export.');
+      toast.error(err instanceof Error ? err.message : 'Gagal export.');
     } finally {
       setPending(null);
     }

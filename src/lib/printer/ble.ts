@@ -1,4 +1,4 @@
-// adminqinq/src/lib/printer/ble.ts
+// coteadmin/src/lib/printer/ble.ts
 export interface WriteOptions {
   withResponse?: boolean;
   chunkSize?: number;

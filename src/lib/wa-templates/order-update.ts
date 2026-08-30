@@ -1,4 +1,4 @@
-// coteadmin/src/lib/wa-templates.ts
+// coteadmin/src/lib/wa-templates/order-update.ts
 type OrderUpdateParams = {
   customerName: string | null;
   orderNumber: string;
@@ -6,6 +6,7 @@ type OrderUpdateParams = {
   currentStatus: string;
   paymentStatus: "PAID" | "UNPAID";
   timelineText: string;
+  appUrl: string;
 };
 
 const STATUS_MESSAGE: Record<string, string> = {
@@ -18,7 +19,7 @@ const STATUS_MESSAGE: Record<string, string> = {
 
 export function buildOrderUpdateMessage(params: OrderUpdateParams): string {
   const trackLink = params.trackingToken
-    ? `${process.env.NEXT_PUBLIC_APP_URL}/track/${params.trackingToken}`
+    ? `${params.appUrl}/track/${params.trackingToken}`
     : `(link lacak belum tersedia untuk order ini)`;
 
   return [

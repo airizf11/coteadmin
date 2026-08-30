@@ -1,4 +1,4 @@
-// adminqinq/src/app/(app)/orders/new/CustomerPicker.tsx
+// coteadmin/src/app/(app)/new/orders/CustomerPicker.tsx
 'use client';
 
 import { useState, useEffect, useTransition } from 'react';

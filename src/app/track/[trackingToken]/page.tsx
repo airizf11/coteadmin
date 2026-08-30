@@ -21,6 +21,7 @@ import {
   Clock,
   CheckCircle2,
 } from 'lucide-react';
+import { STATUS_CONFIG } from '@/lib/constants/order-status';
 
 type TrackingData = {
   orderNumber: string;
@@ -31,13 +32,6 @@ type TrackingData = {
   customerName: string | null;
   items: { itemName: string; qty: number }[];
   statusHistory: { status: string | null; timestamp: string }[];
-};
-
-const STATUS_LABEL: Record<string, string> = {
-  RECEIVED: 'Diterima',
-  IN_PROCESS: 'Diproses',
-  READY: 'Siap Diambil',
-  DONE: 'Selesai',
 };
 
 const ALL_STEPS = ['RECEIVED', 'IN_PROCESS', 'READY', 'DONE'];
@@ -115,7 +109,7 @@ export default async function TrackOrderPage({
   );
 
   const currentStatusLabel =
-    STATUS_LABEL[data.status] ?? data.status;
+    STATUS_CONFIG[data.status]?.label ?? data.status;
 
   return (
     <main className="relative min-h-screen overflow-hidden bg-background px-4 py-5 sm:py-8">
@@ -354,7 +348,7 @@ export default async function TrackOrderPage({
                                     : 'text-foreground'
                                 )}
                               >
-                                {STATUS_LABEL[step]}
+                                {STATUS_CONFIG[step]?.label}
                               </p>
 
                               {isActive && (

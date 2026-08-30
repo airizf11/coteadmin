@@ -1,4 +1,4 @@
-// adminqinq/src/app/(app)/transactions/FilterForm.tsx
+// coteadmin/src/app/(app)/transactions/FilterForm.tsx
 'use client';
 
 import { useState } from 'react';
@@ -71,7 +71,7 @@ export function FilterForm({ startDate, endDate, type }: { startDate?: string; e
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="">Semua Jenis (Masuk & Keluar)</SelectItem>
-                    <SelectItem value="IN" className="text-emerald-600 font-medium">Uang Masuk (IN)</SelectItem>
+                    <SelectItem value="IN" className="text-success font-medium">Uang Masuk (IN)</SelectItem>
                     <SelectItem value="OUT" className="text-destructive font-medium">Uang Keluar (OUT)</SelectItem>
                   </SelectContent>
                 </Select>

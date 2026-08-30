@@ -1,4 +1,4 @@
-// adminqinq/src/app/manifest.ts
+// coteadmin/src/app/manifest.ts
 import { getBranding } from "@/lib/branding";
 import type { MetadataRoute } from "next";
 
