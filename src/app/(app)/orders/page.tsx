@@ -8,8 +8,8 @@ import { Plus, ChevronRight, ReceiptText, SlidersHorizontal, User, CalendarClock
 import { cn } from '@/lib/utils';
 import { STATUS_CONFIG } from '@/lib/constants/order-status';
 import { OrderFilterBar } from './OrderFilterBar';
-import { formatRupiah } from '@/lib/format';
 import { formatDate } from '@/lib/date-range';
+import { Money } from '@/components/Money';
 
 type Order = {
   id: string;
@@ -136,7 +136,7 @@ export default async function OrdersPage({
                       <div className="text-right">
                         <div className="text-xs text-muted-foreground mb-0.5">Total Biaya</div>
                         <div className="font-bold text-primary">
-                          {formatRupiah(o.finalAmount)}
+                          <Money value={o.finalAmount} />
                         </div>
                       </div>
                       <ChevronRight size={20} className="text-muted-foreground opacity-50 group-hover:text-primary group-hover:translate-x-1 transition-all" />

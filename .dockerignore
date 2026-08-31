@@ -1,4 +1,6 @@
-# adminqinq/.dockerignore
+# coteadmin/.dockerignore
+public/icons
+
 node_modules
 .next
 .git

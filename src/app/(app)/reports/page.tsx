@@ -8,10 +8,10 @@ import {
   BarChart3, TrendingUp, TrendingDown, Wallet, ShoppingCart, Receipt,
   ArrowRight, Medal, CreditCard, Activity, CalendarDays, ArrowUpRight,
 } from 'lucide-react';
-import { formatRupiah, formatCompactRupiah } from '@/lib/format';
 import { last30DaysRangeWIB, formatDate } from '@/lib/date-range';
 import { DatePresetFilter } from '@/components/DatePresetFilter';
 import { ApiErrorFallback } from '@/components/ApiErrorFallback';
+import { Money } from '@/components/Money';
 
 type Summary = { revenue: number; cogs: number; grossProfit: number; totalOrders: number };
 type TopItem = { itemName: string; totalSold: number };
@@ -122,21 +122,21 @@ export default async function ReportsPage({
             <CardContent className="p-4 flex flex-col items-center text-center gap-1.5">
               <TrendingUp size={16} className="text-success" />
               <div className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">Masuk</div>
-              <div className="text-sm font-bold text-success">{formatCompactRupiah(cash.totalIn)}</div>
+              <div className="text-sm font-bold text-success"><Money value={cash.totalIn} compact /></div>
             </CardContent>
           </Card>
           <Card className="border-destructive/20 bg-destructive/5">
             <CardContent className="p-4 flex flex-col items-center text-center gap-1.5">
               <TrendingDown size={16} className="text-destructive" />
               <div className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">Keluar</div>
-              <div className="text-sm font-bold text-destructive">{formatCompactRupiah(cash.totalOut)}</div>
+              <div className="text-sm font-bold text-destructive"><Money value={cash.totalOut} compact /></div>
             </CardContent>
           </Card>
           <Card className="border-primary/20 bg-primary/5">
             <CardContent className="p-4 flex flex-col items-center text-center gap-1.5">
               <Wallet size={16} className="text-primary" />
               <div className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">Saldo</div>
-              <div className="text-sm font-bold text-primary">{formatCompactRupiah(cash.balance)}</div>
+              <div className="text-sm font-bold text-primary"><Money value={cash.balance} compact /></div>
             </CardContent>
           </Card>
         </div>
@@ -224,7 +224,7 @@ export default async function ReportsPage({
                         <span className="text-sm font-semibold text-foreground">
                           {catLabel} <span className="ml-1.5 text-[10px] font-normal text-muted-foreground">{i.count} transaksi</span>
                         </span>
-                        <span className="text-xs font-bold text-success">{formatRupiah(i.total)}</span>
+                        <span className="text-xs font-bold text-success"><Money value={i.total} /></span>
                       </div>
                       <div className="h-2.5 w-full overflow-hidden rounded-full bg-muted">
                         <div
@@ -258,7 +258,7 @@ export default async function ReportsPage({
                         <span className="text-sm font-semibold text-foreground">
                           {catLabel} <span className="ml-1.5 text-[10px] font-normal text-muted-foreground">{e.count} transaksi</span>
                         </span>
-                        <span className="text-xs font-bold text-destructive">{formatRupiah(e.total)}</span>
+                        <span className="text-xs font-bold text-destructive"><Money value={e.total} /></span>
                       </div>
                       <div className="h-2.5 w-full overflow-hidden rounded-full bg-muted">
                         <div
@@ -321,7 +321,7 @@ export default async function ReportsPage({
                 Omzet
               </div>
               <div className="mt-2 text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
-                {formatRupiah(summary.revenue)}
+                <Money value={summary.revenue} />
               </div>
               <p className="mt-1 text-xs text-muted-foreground">Total pendapatan dalam periode laporan</p>
             </div>
@@ -333,7 +333,7 @@ export default async function ReportsPage({
           <div className="mt-6 grid grid-cols-2 gap-3 border-t border-border/60 pt-4">
             <div>
               <div className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">Laba Kotor</div>
-              <div className="mt-1 text-sm font-bold text-foreground">{formatRupiah(summary.grossProfit)}</div>
+              <div className="mt-1 text-sm font-bold text-foreground"><Money value={summary.grossProfit} /></div>
             </div>
             <div>
               <div className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">Margin Kotor</div>
@@ -355,7 +355,7 @@ export default async function ReportsPage({
               <span className="text-[10px] font-bold uppercase tracking-wider sm:text-xs">Laba Kotor</span>
             </div>
             <div className="mt-3 text-base font-bold tracking-tight text-foreground sm:text-lg">
-              {formatCompactRupiah(summary.grossProfit)}
+              <Money value={summary.grossProfit} compact />
             </div>
           </CardContent>
         </Card>
@@ -384,7 +384,7 @@ export default async function ReportsPage({
               <span className="text-[10px] font-bold uppercase tracking-wider sm:text-xs">COGS / Modal</span>
             </div>
             <div className="mt-3 text-base font-bold tracking-tight text-foreground sm:text-lg">
-              {formatCompactRupiah(summary.cogs)}
+              <Money value={summary.cogs} compact />
             </div>
           </CardContent>
         </Card>
@@ -463,7 +463,7 @@ export default async function ReportsPage({
                 </div>
                 <div className="text-right">
                   <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">Total omzet</p>
-                  <p className="mt-0.5 text-xs font-bold text-chart-1">{formatCompactRupiah(summary.revenue)}</p>
+                  <p className="mt-0.5 text-xs font-bold text-chart-1"><Money value={summary.revenue} compact /></p>
                 </div>
               </div>
             </>

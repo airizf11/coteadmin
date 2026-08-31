@@ -15,7 +15,7 @@ import {
 } from 'lucide-react';
 import { OrderActionButtons } from './OrderActionButtons';
 import { STATUS_CONFIG } from '@/lib/constants/order-status';
-import { formatRupiah } from '@/lib/format';
+import { Money } from '@/components/Money';
 
 type OrderItem = { id: string; itemName: string; qty: number; subtotal: number };
 type OrderDetail = {
@@ -148,7 +148,7 @@ export default async function OrderDetailPage({ params }: { params: Promise<{ id
                 <span className="text-foreground">
                   {i.itemName} <span className="text-muted-foreground ml-1">x{i.qty}</span>
                 </span>
-                <span className="font-medium">{formatRupiah(i.subtotal)}</span>
+                <span className="font-medium"><Money value={i.subtotal} /></span>
               </li>
             ))}
           </ul>
@@ -157,19 +157,19 @@ export default async function OrderDetailPage({ params }: { params: Promise<{ id
           <div className="border-t border-dashed border-border pt-3 space-y-1.5 text-sm">
             <div className="flex justify-between">
               <span className="text-muted-foreground">Subtotal</span>
-              <span>{formatRupiah(order.totalAmount)}</span>
+              <span><Money value={order.totalAmount} /></span>
             </div>
             {order.discountAmount > 0 && (
               <div className="flex justify-between text-success">
                 <span>Diskon {order.promoCode && `(${order.promoCode})`}</span>
-                <span>-{formatRupiah(order.discountAmount)}</span>
+                <span>-<Money value={order.discountAmount} /></span>
               </div>
             )}
             
             <div className="flex justify-between items-center pt-2 mt-2 border-t border-border">
               <span className="font-semibold text-foreground">Total Tagihan</span>
               <span className="text-lg font-bold text-primary">
-                {formatRupiah(order.finalAmount)}
+                <Money value={order.finalAmount} />
               </span>
             </div>
           </div>

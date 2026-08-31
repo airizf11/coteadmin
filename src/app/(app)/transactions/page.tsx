@@ -18,6 +18,7 @@ import {
 import { formatRupiah } from '@/lib/format';
 import { TransactionFilterBar } from './TransactionFilterBar';
 import { TransactionList } from './TransactionList';
+import { Money } from '@/components/Money';
 
 export type Transaction = {
   id: string;
@@ -98,7 +99,7 @@ export default async function TransactionsPage({
             <div className="text-[10px] text-muted-foreground uppercase font-semibold tracking-wider">Masuk</div>
             <div className="text-sm font-bold text-success truncate w-full" title={formatRupiah(summary.totalIn)}>
               <span className="sr-only">Total Pemasukan: </span>
-              {formatRupiah(summary.totalIn)}
+              <Money value={summary.totalIn} />
             </div>
           </CardContent>
         </Card>
@@ -112,7 +113,7 @@ export default async function TransactionsPage({
             <div className="text-[10px] text-muted-foreground uppercase font-semibold tracking-wider">Keluar</div>
             <div className="text-sm font-bold text-destructive truncate w-full" title={formatRupiah(summary.totalOut)}>
               <span className="sr-only">Total Pengeluaran: </span>
-              {formatRupiah(summary.totalOut)}
+              <Money value={summary.totalOut} />
             </div>
           </CardContent>
         </Card>
@@ -126,7 +127,7 @@ export default async function TransactionsPage({
             <div className="text-[10px] text-muted-foreground uppercase font-semibold tracking-wider">Saldo</div>
             <div className="text-sm font-bold text-primary truncate w-full" title={formatRupiah(summary.balance)}>
               <span className="sr-only">Sisa Saldo: </span>
-              {formatRupiah(summary.balance)}
+              <Money value={summary.balance} />
             </div>
           </CardContent>
         </Card>

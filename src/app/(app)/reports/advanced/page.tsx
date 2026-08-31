@@ -14,9 +14,10 @@ import { ExportButton } from './ExportButton';
 import { ReportTabs } from './ReportTabs';
 import { TrendLineChart } from '@/components/charts/TrendLineChart';
 import { PaymentMethodDonut } from '@/components/charts/PaymentMethodDonut';
-import { formatRupiah } from '@/lib/format';
+// import { formatRupiah } from '@/lib/format';
 import { last30DaysRangeWIB } from '@/lib/date-range';
 import { ApiErrorFallback } from '@/components/ApiErrorFallback';
+import { Money } from '@/components/Money';
 
 type Summary = { revenue: number; cogs: number; grossProfit: number; totalOrders: number };
 type TopItem = { itemName: string; totalSold: number };
@@ -160,7 +161,7 @@ export default async function AdvancedReportsPage({
               <span className="text-[10px] font-bold uppercase tracking-wider">Omzet</span>
             </div>
             <div className="flex flex-wrap items-baseline gap-1">
-              <span className="text-lg font-bold tracking-tight text-chart-1">{formatRupiah(summary.revenue)}</span>
+              <span className="text-lg font-bold tracking-tight text-chart-1"><Money value={summary.revenue} /></span>
               {hasCompare && compareSummary && <CompareBadge data={getChangeData(summary.revenue, compareSummary.revenue)} />}
             </div>
           </CardContent>
@@ -172,7 +173,7 @@ export default async function AdvancedReportsPage({
               <span className="text-[10px] font-bold uppercase tracking-wider">Laba Kotor</span>
             </div>
             <div className="flex flex-wrap items-baseline gap-1">
-              <span className="text-lg font-bold tracking-tight text-chart-2">{formatRupiah(summary.grossProfit)}</span>
+              <span className="text-lg font-bold tracking-tight text-chart-2"><Money value={summary.grossProfit} /></span>
               {hasCompare && compareSummary && <CompareBadge data={getChangeData(summary.grossProfit, compareSummary.grossProfit)} />}
             </div>
           </CardContent>
@@ -183,7 +184,7 @@ export default async function AdvancedReportsPage({
               <ShoppingCart size={14} />
               <span className="text-[10px] font-bold uppercase tracking-wider">Modal (COGS)</span>
             </div>
-            <div className="text-lg font-bold tracking-tight text-foreground">{formatRupiah(summary.cogs)}</div>
+            <div className="text-lg font-bold tracking-tight text-foreground"><Money value={summary.cogs} /></div>
           </CardContent>
         </Card>
         <Card className="border-chart-3/30 bg-chart-3/5">
@@ -208,26 +209,26 @@ export default async function AdvancedReportsPage({
         <CardContent className="space-y-3 p-4">
           <div className="flex items-center justify-between gap-4 text-sm">
             <span className="text-muted-foreground">Omzet Penjualan</span>
-            <span className="font-semibold text-foreground">{formatRupiah(netProfit.revenue)}</span>
+            <span className="font-semibold text-foreground"><Money value={netProfit.revenue} /></span>
           </div>
           <div className="flex items-center justify-between gap-4 text-sm text-destructive">
             <span className="opacity-80">Modal (COGS)</span>
-            <span className="font-medium">-{formatRupiah(netProfit.cogs)}</span>
+            <span className="font-medium">-<Money value={netProfit.cogs} /></span>
           </div>
           <div className="flex items-center justify-between gap-4 border-t border-dashed border-border pt-3 text-sm">
             <span className="font-medium text-foreground">Laba Kotor</span>
-            <span className="font-bold text-foreground">{formatRupiah(netProfit.grossProfit)}</span>
+            <span className="font-bold text-foreground"><Money value={netProfit.grossProfit} /></span>
           </div>
           <div className="flex items-center justify-between gap-4 text-sm text-destructive">
             <span className="opacity-80">Beban Operasional</span>
-            <span className="font-medium">-{formatRupiah(netProfit.operatingExpense)}</span>
+            <span className="font-medium">-<Money value={netProfit.operatingExpense} /></span>
           </div>
           <div className={cn('mt-2 rounded-xl border p-4', netProfit.netProfit >= 0 ? 'border-success/20 bg-success/5' : 'border-destructive/20 bg-destructive/5')}>
             <div className="flex items-center justify-between gap-3">
               <div>
                 <div className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Laba Bersih</div>
                 <div className={cn('mt-1 text-xl font-bold tracking-tight', netProfit.netProfit >= 0 ? 'text-success' : 'text-destructive')}>
-                  {formatRupiah(netProfit.netProfit)}
+                  <Money value={netProfit.netProfit} />
                 </div>
               </div>
               {hasCompare && compareNetProfit && <CompareBadge data={getChangeData(netProfit.netProfit, compareNetProfit.netProfit)} />}
@@ -297,7 +298,7 @@ export default async function AdvancedReportsPage({
         <CardContent className="space-y-3 p-4 pt-2">
           <div className="flex items-center justify-between gap-4 border-b border-chart-4/15 pb-3">
             <span className="text-sm text-chart-4/80">Total Diskon Diberikan</span>
-            <span className="font-bold text-chart-4">{formatRupiah(promo.totalDiscount)}</span>
+            <span className="font-bold text-chart-4"><Money value={promo.totalDiscount} /></span>
           </div>
           <div className="flex items-center justify-between gap-4 border-b border-chart-4/15 pb-3">
             <span className="text-sm text-chart-4/80">Order Pakai Promo</span>
@@ -310,7 +311,7 @@ export default async function AdvancedReportsPage({
           {hasCompare && comparePromo && (
             <div className="mt-4 rounded-xl border border-chart-4/15 bg-background/60 p-3 text-xs text-muted-foreground">
               <span className="mb-1.5 block font-semibold text-foreground">Data Periode Pembanding</span>
-              Total Diskon: <span className="font-medium text-foreground">{formatRupiah(comparePromo.totalDiscount)}</span>
+              Total Diskon: <span className="font-medium text-foreground"><Money value={comparePromo.totalDiscount} /></span>
               <br />
               Digunakan di <span className="font-medium text-foreground">{comparePromo.ordersWithPromo} order</span>
             </div>
@@ -355,7 +356,7 @@ export default async function AdvancedReportsPage({
                       <span className="text-sm font-semibold text-foreground">
                         {catLabel} <span className="ml-1.5 text-[10px] font-normal text-muted-foreground">{i.count} transaksi</span>
                       </span>
-                      <span className="text-xs font-bold text-success">{formatRupiah(i.total)}</span>
+                      <span className="text-xs font-bold text-success"><Money value={i.total} /></span>
                     </div>
                     <div className="h-2.5 w-full overflow-hidden rounded-full bg-muted">
                       <div className="h-full rounded-full bg-gradient-to-r from-success/60 to-success transition-all duration-1000 ease-out" style={{ width: `${Math.max(percentage, 1)}%` }} />
@@ -386,7 +387,7 @@ export default async function AdvancedReportsPage({
                       <span className="text-sm font-semibold text-foreground">
                         {catLabel} <span className="ml-1.5 text-[10px] font-normal text-muted-foreground">{e.count} transaksi</span>
                       </span>
-                      <span className="text-xs font-bold text-destructive">{formatRupiah(e.total)}</span>
+                      <span className="text-xs font-bold text-destructive"><Money value={e.total} /></span>
                     </div>
                     <div className="h-2.5 w-full overflow-hidden rounded-full bg-muted">
                       <div className="h-full rounded-full bg-gradient-to-r from-destructive/60 to-destructive transition-all duration-1000 ease-out" style={{ width: `${Math.max(percentage, 1)}%` }} />
@@ -425,7 +426,7 @@ export default async function AdvancedReportsPage({
                     <div className="text-[10px] text-muted-foreground">{c.totalOrders} order</div>
                   </div>
                 </div>
-                <span className="shrink-0 text-sm font-bold text-foreground">{formatRupiah(c.totalSpent)}</span>
+                <span className="shrink-0 text-sm font-bold text-foreground"><Money value={c.totalSpent} /></span>
               </li>
             ))}
           </ul>

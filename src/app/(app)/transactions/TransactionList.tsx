@@ -8,10 +8,11 @@ import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { cn } from '@/lib/utils';
 import { Search, ArrowDownLeft, ArrowUpRight } from 'lucide-react';
-import { formatRupiah } from '@/lib/format';
+// import { formatRupiah } from '@/lib/format';
 import { TX_CATEGORY_LABEL } from '@/lib/constants/transaction';
 import { MarkPaidInline } from './MarkPaidInline';
 import type { Transaction } from './page';
+import { Money } from '@/components/Money';
 
 export function TransactionList({ transactions }: { transactions: Transaction[] }) {
   const [query, setQuery] = useState('');
@@ -97,12 +98,12 @@ export function TransactionList({ transactions }: { transactions: Transaction[] 
                         )}
                       >
                         <span className="sr-only">{isIncome ? 'Pemasukan sebesar' : 'Pengeluaran sebesar'}</span>
-                        {isIncome ? '+' : '-'}{formatRupiah(tx.amount)}
+                        {isIncome ? '+' : '-'}<Money value={tx.amount} />
                       </div>
 
                       {tx.fee != null && tx.fee > 0 && (
                         <div className="text-[10px] text-warning font-medium mt-0.5" aria-label={`Dipotong biaya admin Rp${tx.fee}`}>
-                          Fee: {formatRupiah(tx.fee)}
+                          Fee: <Money value={tx.fee} />
                         </div>
                       )}
 

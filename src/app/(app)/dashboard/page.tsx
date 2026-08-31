@@ -6,8 +6,7 @@ import { getCurrentUserName, getCurrentUserEmail } from '@/lib/session';
 import { Card, CardContent } from '@/components/ui/card';
 import { STATUS_CONFIG } from '@/lib/constants/order-status';
 import {
-  Wallet,
-  Clock,
+  Wallet, // Clock,
   Users,
   ArrowRight,
   ListChecks,
@@ -18,8 +17,8 @@ import {
   AlertCircle,
 } from 'lucide-react';
 import { DashboardSkeleton } from './DashboardSkeleton';
-import { formatRupiah } from '@/lib/format';
 import { cn } from '@/lib/utils';
+import { Money } from '@/components/Money';
 
 type Overview = {
   ordersToday: number;
@@ -28,6 +27,8 @@ type Overview = {
   totalOrders: number;
   totalRevenue: number;
   totalCustomers: number;
+  unpaidOrders: number;
+  unpaidAmount: number;
 };
 
 type StatusBreakdown = Record<string, number>;
@@ -350,7 +351,7 @@ function AdminView({
           <MetricCard
             icon={<Wallet size={16} />}
             label="Omzet Hari Ini"
-            value={formatRupiah(o.revenueToday)}
+            value={<Money value={o.revenueToday} />}
             tone="success"
           />
 
@@ -390,9 +391,31 @@ function AdminView({
         </span>
 
         <span className="text-sm font-bold text-success">
-          {formatRupiah(o.totalRevenue)}
+          <Money value={o.totalRevenue} />
         </span>
       </div>
+
+      {o.unpaidOrders > 0 && (
+        <Link href="/orders?paymentStatus=UNPAID" className="block rounded-2xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
+          <Card className="border-destructive/30 bg-destructive/5 shadow-sm transition-all hover:shadow-md group">
+            <CardContent className="p-4 flex items-center justify-between gap-3">
+              <div className="flex items-center gap-3">
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-destructive/10 text-destructive">
+                  <AlertCircle size={18} />
+                </div>
+                <div>
+                  <div className="font-semibold text-destructive">Piutang / Belum Lunas</div>
+                  <div className="text-xs text-muted-foreground mt-0.5">{o.unpaidOrders} order, sepanjang waktu</div>
+                </div>
+              </div>
+              <div className="text-right">
+                <div className="font-bold text-destructive"><Money value={o.unpaidAmount} /></div>
+                <ArrowRight size={14} className="ml-auto mt-1 text-destructive/60 group-hover:translate-x-1 transition-all" />
+              </div>
+            </CardContent>
+          </Card>
+        </Link>
+      )}
 
       <Link
         href="/reports"
@@ -439,7 +462,7 @@ function MetricCard({
 }: {
   icon: React.ReactNode;
   label: string;
-  value: string;
+  value: React.ReactNode;
   tone: 'success' | 'info' | 'primary' | 'default';
   description?: string;
   interactive?: boolean;

@@ -5,6 +5,7 @@ import { getBranding, NAV_PRESETS } from '@/lib/branding';
 import { cotebek } from '@/lib/cotebek';
 import { NoAccessScreen } from './NoAccessScreen';
 import { ThemeToggle } from '@/components/ThemeToggle';
+import { PrivacyToggle } from '@/components/PrivacyToggle';
 
 // export const dynamic = 'force-dynamic';
 
@@ -31,7 +32,10 @@ export default async function AppLayout({ children }: { children: React.ReactNod
               {b.businessName} by CoTE
             </span>
           </Link>
-          <ThemeToggle />
+          <div className="flex items-center gap-1">
+            <PrivacyToggle />
+            <ThemeToggle />
+          </div>
           {/* Tempat untuk letak Toggle Bahasa nanti */}
         </div>
       </header>
