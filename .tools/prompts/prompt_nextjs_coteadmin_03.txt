@@ -1,4 +1,299 @@
-- '// coteadmin/src/proxy.ts
+# tree
+'\web\coteadmin> tree src /f
+Folder PATH listing for volume OS
+Volume serial number is EA64-DF65
+C:\...\WEB\COTEADMIN\SRC
+│   proxy.ts
+│   
+├───app
+│   │   favicon.ico
+│   │   globals.css
+│   │   layout.tsx
+│   │   manifest.ts
+│   │   page.tsx
+│   │   providers.tsx
+│   │   
+│   ├───(app)
+│   │   │   error.tsx
+│   │   │   layout.tsx
+│   │   │   NoAccessScreen.tsx
+│   │   │   
+│   │   ├───about
+│   │   │       page.tsx
+│   │   │       
+│   │   ├───attachments
+│   │   │       DeleteButton.tsx
+│   │   │       page.tsx
+│   │   │       
+│   │   ├───audit-logs
+│   │   │       page.tsx
+│   │   │       
+│   │   ├───customers
+│   │   │   │   actions.ts
+│   │   │   │   CustomerFormFields.tsx
+│   │   │   │   page.tsx
+│   │   │   │   
+│   │   │   ├───new
+│   │   │   │       page.tsx
+│   │   │   │       
+│   │   │   └───[id]
+│   │   │       │   DeleteButton.tsx
+│   │   │       │   page.tsx
+│   │   │       │   
+│   │   │       └───edit
+│   │   │               actions.ts
+│   │   │               EditForm.tsx
+│   │   │               page.tsx
+│   │   │               
+│   │   ├───dashboard
+│   │   │       DashboardSkeleton.tsx
+│   │   │       page.tsx
+│   │   │       
+│   │   ├───help
+│   │   │       page.tsx
+│   │   │       
+│   │   ├───items
+│   │   │   │   actions.ts
+│   │   │   │   ItemFormFields.tsx
+│   │   │   │   page.tsx
+│   │   │   │   
+│   │   │   ├───new
+│   │   │   │       page.tsx
+│   │   │   │       
+│   │   │   └───[id]
+│   │   │           actions.ts
+│   │   │           ItemDetail.tsx
+│   │   │           page.tsx
+│   │   │           
+│   │   ├───more
+│   │   │       page.tsx
+│   │   │       
+│   │   ├───new
+│   │   │   │   page.tsx
+│   │   │   │   
+│   │   │   ├───orders
+│   │   │   │       customer-actions.ts
+│   │   │   │       CustomerPicker.tsx
+│   │   │   │       OrderForm.tsx
+│   │   │   │       page.tsx
+│   │   │   │       promo-actions.ts
+│   │   │   │       
+│   │   │   ├───tx
+│   │   │   │       page.tsx
+│   │   │   │       
+│   │   │   └───upload
+│   │   │           page.tsx
+│   │   │           
+│   │   ├───orders
+│   │   │   │   actions.ts
+│   │   │   │   OrderFilterBar.tsx
+│   │   │   │   page.tsx
+│   │   │   │   
+│   │   │   └───[id]
+│   │   │       │   actions.ts
+│   │   │       │   OrderActionButtons.tsx
+│   │   │       │   page.tsx
+│   │   │       │   
+│   │   │       └───receipt
+│   │   │               BlePrintButton.tsx
+│   │   │               page.tsx
+│   │   │               ReceiptWaButton.tsx
+│   │   │               
+│   │   ├───profile
+│   │   │       actions.ts
+│   │   │       page.tsx
+│   │   │       
+│   │   ├───promos
+│   │   │   │   page.tsx
+│   │   │   │   
+│   │   │   ├───new
+│   │   │   │       actions.ts
+│   │   │   │       page.tsx
+│   │   │   │       
+│   │   │   └───[id]
+│   │   │           actions.ts
+│   │   │           page.tsx
+│   │   │           PromoDetail.tsx
+│   │   │           
+│   │   ├───raw-materials
+│   │   │   │   actions.tsx
+│   │   │   │   page.tsx
+│   │   │   │   
+│   │   │   └───new
+│   │   │           page.tsx
+│   │   │           
+│   │   ├───reports
+│   │   │   │   page.tsx
+│   │   │   │   
+│   │   │   └───advanced
+│   │   │           AdvancedReportFilterBar.tsx
+│   │   │           ExportButton.tsx
+│   │   │           page.tsx
+│   │   │           
+│   │   ├───settings
+│   │   │       actions.ts
+│   │   │       page.tsx
+│   │   │       SettingsForm.tsx
+│   │   │       
+│   │   ├───teams
+│   │   │       actions.ts
+│   │   │       AddTeamMember.tsx
+│   │   │       InviteForm.tsx
+│   │   │       page.tsx
+│   │   │       RemoveButton.tsx
+│   │   │       
+│   │   └───transactions
+│   │       │   actions.ts
+│   │       │   MarkPaidInline.tsx
+│   │       │   page.tsx
+│   │       │   TransactionFilterBar.tsx
+│   │       │   TransactionList.tsx
+│   │       │   
+│   │       └───[id]
+│   │               page.tsx
+│   │               
+│   ├───api
+│   │   ├───attachments
+│   │   │   │   route.ts
+│   │   │   │   
+│   │   │   └───[id]
+│   │   │       │   route.ts
+│   │   │       │   
+│   │   │       ├───download
+│   │   │       │       route.ts
+│   │   │       │       
+│   │   │       └───view
+│   │   │               route.ts
+│   │   │               
+│   │   └───reports
+│   │       └───export
+│   │               route.ts
+│   │               
+│   ├───devtest
+│   │   ├───apikeys
+│   │   │       actions.ts
+│   │   │       CreateAppForm.tsx
+│   │   │       page.tsx
+│   │   │       
+│   │   ├───items
+│   │   │       page.tsx
+│   │   │       
+│   │   └───transactions
+│   │           page.tsx
+│   │           
+│   ├───login
+│   │       actions.ts
+│   │       LoginForm.tsx
+│   │       page.tsx
+│   │       
+│   ├───printlab
+│   │       page.tsx
+│   │       
+│   └───track
+│       │   page.tsx
+│       │   
+│       └───[trackingToken]
+│               page.tsx
+│               
+├───components
+│   │   ApiErrorFallback.tsx
+│   │   DatePresetFilter.tsx
+│   │   PageHeader.tsx
+│   │   ThemeToggle.tsx
+│   │   
+│   ├───printlab
+│   │       PrintLab.tsx
+│   │       
+│   └───ui
+│           badge.tsx
+│           button.tsx
+│           card.tsx
+│           dialog.tsx
+│           dropdown-menu.tsx
+│           input.tsx
+│           label.tsx
+│           select.tsx
+│           sheet.tsx
+│           sonner.tsx
+│           switch.tsx
+│           table.tsx
+│           textarea.tsx
+│           
+├───lib
+│   │   auth-refresh.ts
+│   │   branding.ts
+│   │   cotebek.ts
+│   │   date-range.ts
+│   │   format.ts
+│   │   session.ts
+│   │   utils.ts
+│   │   whatsapp.ts
+│   │   
+│   ├───constants
+│   │       order-status.tsx
+│   │       payment.ts
+│   │       transaction.ts
+│   │       
+│   ├───printer
+│   │       ble.ts
+│   │       escpos.ts
+│   │       
+│   └───wa-templates
+│           index.ts
+│           order-update.ts
+│           receipt.ts
+│           
+└───types
+        web-bluetooth.d.ts'
+
+# main
+- '# coteadmin/dockerfile
+FROM node:22-alpine AS deps
+WORKDIR /app
+COPY package.json package-lock.json* ./
+RUN npm ci
+
+FROM node:22-alpine AS builder
+WORKDIR /app
+COPY --from=deps /app/node_modules ./node_modules
+COPY . .
+
+ARG NEXT_PUBLIC_GOOGLE_CLIENT_ID
+ENV NEXT_PUBLIC_GOOGLE_CLIENT_ID=$NEXT_PUBLIC_GOOGLE_CLIENT_ID
+
+RUN npm run build
+
+FROM node:22-alpine AS runner
+WORKDIR /app
+
+ENV NODE_ENV=production
+RUN addgroup --system --gid 1001 nodejs \
+    && adduser --system --uid 1001 nextjs
+
+RUN apk add --no-cache tzdata
+
+COPY --from=builder /app/public ./public
+COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
+COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
+
+USER nextjs
+
+EXPOSE 3000
+ENV PORT=3000
+ENV HOSTNAME=0.0.0.0
+
+CMD ["node", "server.js"]';
+
+- '// coteadmin/next.config.ts
+import type { NextConfig } from "next";
+
+const nextConfig: NextConfig = {
+  output: "standalone",
+};
+
+export default nextConfig;';
+
+- '!edit // coteadmin/src/proxy.ts
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { callRefreshEndpoint } from "@/lib/auth-refresh";
@@ -121,23 +416,27 @@ declare global {
 }';
 
 # lib
-- '!edit // coteadmin/src/lib/auth-refresh.ts
+- '// coteadmin/src/lib/auth-refresh.ts
 const BASE_URL = process.env.COTEBEK_API_URL!;
 
 export async function callRefreshEndpoint(refreshToken: string) {
-  const res = await fetch(`${BASE_URL}/auth/refresh`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ refreshToken }),
-  });
+  try {
+    const res = await fetch(`${BASE_URL}/auth/refresh`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ refreshToken }),
+    });
 
-  if (!res.ok) return null;
+    if (!res.ok) return null;
 
-  const { data } = await res.json();
-  return data as { accessToken: string; refreshToken: string };
+    const { data } = await res.json();
+    return data as { accessToken: string; refreshToken: string };
+  } catch {
+    return null;
+  }
 }';
 
-- '!edit // coteadmin/src/lib/branding.ts
+- '// coteadmin/src/lib/branding.ts
 import { cotebek, cotebekPublic } from "@/lib/cotebek";
 import { Home, ClipboardList, Users, Wallet, Menu, PieChart, type LucideIcon } from "lucide-react";
 
@@ -159,9 +458,9 @@ export const DEFAULT_BRANDING: Branding = {
 
 export async function getBranding(): Promise<Branding> {
   try {
+
     const res = await cotebekPublic<{ data: Partial<Branding> }>(
       "/app-settings/public/branding",
-      300,
     );
 
     const clean = Object.fromEntries(
@@ -238,7 +537,7 @@ export const NAV_PRESETS: Record<BusinessType, NavPreset> = {
   },
 };';
 
-- '!edit // coteadmin/src/lib/cotebek.ts
+- '// coteadmin/src/lib/cotebek.ts
 import { headers as getRequestHeaders } from "next/headers";
 import { getStaffToken } from "./session";
 
@@ -251,17 +550,30 @@ type FetchOpts = {
   requireAuth?: boolean;
 };
 
+export class ApiError extends Error {
+  status: number;
+  constructor(message: string, status: number) {
+    super(message);
+    this.name = "ApiError";
+    this.status = status;
+  }
+}
+
 export async function cotebekPublic<T = unknown>(
   path: string,
-  revalidateSeconds = 300,
 ): Promise<T> {
-  const res = await fetch(`${BASE_URL}${path}`, {
-    headers: { "x-api-key": API_KEY },
-    next: { revalidate: revalidateSeconds },
-  });
+  let res: Response;
+  try {
+    res = await fetch(`${BASE_URL}${path}`, {
+      headers: { "x-api-key": API_KEY },
+      cache: "no-store",
+    });
+  } catch {
+    throw new ApiError("Gagal terhubung ke server.", 0);
+  }
 
   if (!res.ok) {
-    throw new Error(`CoTEBek error ${res.status}`);
+    throw new ApiError(`CoTEBek error ${res.status}`, res.status);
   }
 
   return res.json();
@@ -292,22 +604,30 @@ export async function cotebek<T = unknown>(
     requestHeaders["Authorization"] = `Bearer ${token}`;
   }
 
-  const res = await fetch(`${BASE_URL}${path}`, {
-    method,
-    headers: requestHeaders,
-    body: body ? JSON.stringify(body) : undefined,
-    cache: "no-store",
-  });
+  let res: Response;
+  try {
+    res = await fetch(`${BASE_URL}${path}`, {
+      method,
+      headers: requestHeaders,
+      body: body ? JSON.stringify(body) : undefined,
+      cache: "no-store",
+    });
+  } catch {
+    throw new ApiError("Gagal terhubung ke server.", 0);
+  }
 
   if (!res.ok) {
     const errBody = await res.json().catch(() => ({}));
-    throw new Error(errBody.message ?? `CoTEBek error ${res.status}`);
+    throw new ApiError(
+      errBody.message ?? `CoTEBek error ${res.status}`,
+      res.status,
+    );
   }
 
   return res.json();
 }';
 
-- '!edit // coteadmin/src/lib/date-range.ts
+- '// coteadmin/src/lib/date-range.ts
 const WIB_OFFSET_MS = 7 * 60 * 60 * 1000;
 
 export function last30DaysRangeWIB() {
@@ -325,6 +645,40 @@ export function formatDate(dateString: string) {
     day: "numeric",
     month: "short",
   });
+}
+
+export type DatePreset = "today" | "this_week" | "this_month" | "last_30_days";
+
+export const DATE_PRESET_OPTIONS: { value: DatePreset; label: string }[] = [
+  { value: "today", label: "Hari Ini" },
+  { value: "this_week", label: "Minggu Ini" },
+  { value: "this_month", label: "Bulan Ini" },
+  { value: "last_30_days", label: "30 Hari Terakhir" },
+];
+
+export function getDatePresetRange(preset: DatePreset) {
+  const nowWIB = new Date(Date.now() + WIB_OFFSET_MS);
+  const end = nowWIB.toISOString().slice(0, 10);
+  const start = new Date(nowWIB);
+
+  switch (preset) {
+    case "today":
+      break;
+    case "this_week": {
+      const day = start.getDay();
+      const diffToMonday = day === 0 ? 6 : day - 1;
+      start.setDate(start.getDate() - diffToMonday);
+      break;
+    }
+    case "this_month":
+      start.setDate(1);
+      break;
+    case "last_30_days":
+      start.setDate(start.getDate() - 29);
+      break;
+  }
+
+  return { start: start.toISOString().slice(0, 10), end };
 }';
 
 - '// coteadmin/src/lib/format.ts
@@ -423,12 +777,58 @@ export async function getCurrentUserName() {
   }
 }';
 
-whatsapp
-- '';
+- '// coteadmin/src/lib/whatsapp.ts
+export function waLink(phone: string, text: string): string {
+  const digits = phone.replace(/\D/g, "");
+  const normalized = digits.startsWith("0") ? "62" + digits.slice(1) : digits;
+  return `https://wa.me/${normalized}?text=${encodeURIComponent(text)}`;
+}';
 
 - '// coteadmin/src/lib/wa-templates/index.ts
 export * from "./order-update";
 export * from "./receipt";';
+
+- '// coteadmin/src/lib/wa-templates/order-update.ts
+type OrderUpdateParams = {
+  customerName: string | null;
+  orderNumber: string;
+  trackingToken: string | null;
+  currentStatus: string;
+  paymentStatus: "PAID" | "UNPAID";
+  timelineText: string;
+  appUrl: string;
+};
+
+const STATUS_MESSAGE: Record<string, string> = {
+  RECEIVED: "Cucian Anda sudah kami terima dan akan segera diproses ya 🙏",
+  IN_PROCESS: "Cucian Anda sedang dalam proses pengerjaan.",
+  READY: "Cucian Anda sudah *SIAP DIAMBIL*! Silakan mampir ke toko kami ya 😊",
+  DONE: "Terima kasih, cucian sudah diambil. Sampai jumpa lagi! 🙏",
+  CANCELLED: "Order ini telah dibatalkan.",
+};
+
+export function buildOrderUpdateMessage(params: OrderUpdateParams): string {
+  const trackLink = params.trackingToken
+    ? `${params.appUrl}/track/${params.trackingToken}`
+    : `(link lacak belum tersedia untuk order ini)`;
+
+  return [
+    `Halo${params.customerName ? ` ${params.customerName}` : ""}! 👋`,
+    "",
+    `Update untuk order *${params.orderNumber}*:`,
+    "",
+    params.timelineText,
+    "",
+    STATUS_MESSAGE[params.currentStatus] ?? "",
+    "",
+    params.paymentStatus === "UNPAID"
+      ? "\n💰 *Belum lunas* — jangan lupa bawa uangnya saat pengambilan ya!"
+      : "",
+    "",
+    ...(trackLink ? [`Cek status detail kapan saja di:`, trackLink, ""] : []),
+    "Terima kasih! 🙏",
+  ].join("\n");
+}';
 
 - '// coteadmin/src/lib/wa-templates/receipt.ts
 import { formatRupiah } from "@/lib/format";
@@ -456,11 +856,12 @@ type ReceiptWaParams = {
     promoName: string | null;
     total: number;
   };
+  appUrl: string;
 };
 
 export function buildReceiptMessage(params: ReceiptWaParams): string {
   const trackLink = params.order.trackingToken
-    ? `${process.env.NEXT_PUBLIC_APP_URL}/track/${params.order.trackingToken}`
+    ? `${params.appUrl}/track/${params.order.trackingToken}`
     : null;
 
   const itemLines = params.items.map(
@@ -490,47 +891,6 @@ export function buildReceiptMessage(params: ReceiptWaParams): string {
     "",
     ...(trackLink ? [`Lacak status order:`, trackLink, ""] : []),
     params.business.footer,
-  ].join("\n");
-}';
-
-- '// coteadmin/src/lib/wa-templates/order-update.ts
-type OrderUpdateParams = {
-  customerName: string | null;
-  orderNumber: string;
-  trackingToken: string | null;
-  currentStatus: string;
-  paymentStatus: "PAID" | "UNPAID";
-  timelineText: string;
-};
-
-const STATUS_MESSAGE: Record<string, string> = {
-  RECEIVED: "Cucian Anda sudah kami terima dan akan segera diproses ya 🙏",
-  IN_PROCESS: "Cucian Anda sedang dalam proses pengerjaan.",
-  READY: "Cucian Anda sudah *SIAP DIAMBIL*! Silakan mampir ke toko kami ya 😊",
-  DONE: "Terima kasih, cucian sudah diambil. Sampai jumpa lagi! 🙏",
-  CANCELLED: "Order ini telah dibatalkan.",
-};
-
-export function buildOrderUpdateMessage(params: OrderUpdateParams): string {
-  const trackLink = params.trackingToken
-    ? `${process.env.NEXT_PUBLIC_APP_URL}/track/${params.trackingToken}`
-    : `(link lacak belum tersedia untuk order ini)`;
-
-  return [
-    `Halo${params.customerName ? ` ${params.customerName}` : ""}! 👋`,
-    "",
-    `Update untuk order *${params.orderNumber}*:`,
-    "",
-    params.timelineText,
-    "",
-    STATUS_MESSAGE[params.currentStatus] ?? "",
-    "",
-    params.paymentStatus === "UNPAID"
-      ? "\n💰 *Belum lunas* — jangan lupa bawa uangnya saat pengambilan ya!"
-      : "",
-    "",
-    ...(trackLink ? [`Cek status detail kapan saja di:`, trackLink, ""] : []),
-    "Terima kasih! 🙏",
   ].join("\n");
 }';
 
@@ -640,6 +1000,15 @@ export const TRANSITIONS: Record<
 
 - '// coteadmin/src/lib/constants/payment.ts
 export const PAYMENT_METHODS = ["Tunai", "Transfer Bank", "QRIS", "E-Wallet"];';
+
+- '// coteadmin/src/lib/constants/transaction.ts
+export const TX_CATEGORY_LABEL: Record<string, string> = {
+  SALES: "Penjualan",
+  EXPENSE: "Pengeluaran",
+  FUND_IN: "Modal Masuk",
+  FUND_OUT: "Modal Keluar",
+  OTHER: "Lainnya",
+};';
 
 - '// coteadmin/src/lib/printer/ble.ts
 export interface WriteOptions {
@@ -1490,11 +1859,183 @@ export function PageHeader({ title, subtitle, backHref, backLabel, action }: Pag
   );
 }';
 
-DatePresetFilter
-- '';
+- '// coteadmin/src/components/DatePresetFilter.tsx
+'use client';
 
-ApiErrorFallback
-- '';
+import { useState } from 'react';
+import { useRouter, usePathname, useSearchParams } from 'next/navigation';
+import { cn } from '@/lib/utils';
+import { CalendarRange } from 'lucide-react';
+import { DATE_PRESET_OPTIONS, getDatePresetRange, type DatePreset } from '@/lib/date-range';
+
+export function DatePresetFilter() {
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const [showCustom, setShowCustom] = useState(false);
+  const [customStart, setCustomStart] = useState(searchParams.get('startDate') ?? '');
+  const [customEnd, setCustomEnd] = useState(searchParams.get('endDate') ?? '');
+
+  const currentStart = searchParams.get('startDate') ?? '';
+  const currentEnd = searchParams.get('endDate') ?? '';
+
+  const activePreset = DATE_PRESET_OPTIONS.find((opt) => {
+    const r = getDatePresetRange(opt.value);
+    return r.start === currentStart && r.end === currentEnd;
+  })?.value;
+
+  function pushParams(start: string, end: string) {
+    const params = new URLSearchParams(searchParams.toString());
+    if (start) params.set('startDate', start); else params.delete('startDate');
+    if (end) params.set('endDate', end); else params.delete('endDate');
+    const qs = params.toString();
+    router.push(qs ? `${pathname}?${qs}` : pathname);
+  }
+
+  function applyPreset(preset: DatePreset) {
+    const { start, end } = getDatePresetRange(preset);
+    setShowCustom(false);
+    pushParams(start, end);
+  }
+
+  return (
+    <div className="space-y-2">
+      <div className="flex flex-wrap gap-2">
+        {DATE_PRESET_OPTIONS.map((opt) => (
+          <button
+            key={opt.value}
+            onClick={() => applyPreset(opt.value)}
+            className={cn(
+              'text-xs px-3 py-1.5 rounded-full border font-medium transition-colors',
+              activePreset === opt.value
+                ? 'bg-primary text-primary-foreground border-primary'
+                : 'bg-background text-muted-foreground border-border hover:border-primary/40 cursor-pointer',
+            )}
+          >
+            {opt.label}
+          </button>
+        ))}
+        <button
+          onClick={() => setShowCustom((v) => !v)}
+          className={cn(
+            'text-xs px-3 py-1.5 rounded-full border font-medium transition-colors flex items-center gap-1.5',
+            !activePreset && (currentStart || currentEnd)
+              ? 'bg-primary text-primary-foreground border-primary'
+              : 'bg-background text-muted-foreground border-border hover:border-primary/40 cursor-pointer',
+          )}
+        >
+          <CalendarRange size={12} /> Custom
+        </button>
+      </div>
+
+      {showCustom && (
+        <div className="flex flex-wrap items-end gap-2 rounded-xl border border-dashed border-border bg-muted/30 p-3">
+          <div className="space-y-1">
+            <label className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">Dari</label>
+            <input
+              type="date"
+              value={customStart}
+              onChange={(e) => setCustomStart(e.target.value)}
+              className="h-9 rounded-md border border-input bg-background px-2 text-sm"
+            />
+          </div>
+          <div className="space-y-1">
+            <label className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">Sampai</label>
+            <input
+              type="date"
+              value={customEnd}
+              onChange={(e) => setCustomEnd(e.target.value)}
+              className="h-9 rounded-md border border-input bg-background px-2 text-sm"
+            />
+          </div>
+          <button
+            onClick={() => pushParams(customStart, customEnd)}
+            className="h-9 rounded-md bg-primary px-3 text-sm font-semibold text-primary-foreground cursor-pointer"
+          >
+            Terapkan
+          </button>
+        </div>
+      )}
+    </div>
+  );
+}';
+
+- '// coteadmin/src/components/ApiErrorFallback.tsx
+import { AlertTriangle, ShieldOff, SearchX, WifiOff, Clock } from 'lucide-react';
+import { ApiError } from '@/lib/cotebek';
+
+type FallbackConfig = {
+  icon: typeof AlertTriangle;
+  title: string;
+  description: string;
+  code: string;
+};
+
+function resolveFallback(error: unknown): FallbackConfig {
+  if (error instanceof ApiError) {
+    switch (error.status) {
+      case 0:
+        return {
+          icon: WifiOff,
+          title: 'Gak Bisa Terhubung',
+          description: 'Gagal menghubungi server. Cek koneksi kamu atau coba lagi sebentar.',
+          code: 'NETWORK',
+        };
+      case 403:
+        return {
+          icon: ShieldOff,
+          title: 'Gak Punya Akses',
+          description: 'Kamu gak punya izin buat lihat halaman ini. Hubungi admin/owner kalau ini seharusnya bisa diakses.',
+          code: 'FORBIDDEN_403',
+        };
+      case 404:
+        return {
+          icon: SearchX,
+          title: 'Data Gak Ditemukan',
+          description: 'Data yang kamu cari gak ada atau udah dihapus.',
+          code: 'NOT_FOUND_404',
+        };
+      case 429:
+        return {
+          icon: Clock,
+          title: 'Kebanyakan Request',
+          description: 'Terlalu banyak request dalam waktu singkat. Tunggu sebentar terus coba lagi.',
+          code: 'RATE_LIMIT_429',
+        };
+      default:
+        return {
+          icon: AlertTriangle,
+          title: 'Ada yang Gak Beres',
+          description: 'Server lagi bermasalah. Coba lagi beberapa saat lagi.',
+          code: `SERVER_${error.status}`,
+        };
+    }
+  }
+
+  return {
+    icon: AlertTriangle,
+    title: 'Ada yang Gak Beres',
+    description: 'Terjadi kesalahan yang gak terduga.',
+    code: 'UNKNOWN',
+  };
+}
+
+export function ApiErrorFallback({ error }: { error: unknown }) {
+  const { icon: Icon, title, description, code } = resolveFallback(error);
+
+  return (
+    <div className="flex flex-col items-center justify-center py-16 px-6 text-center">
+      <div className="w-16 h-16 bg-muted rounded-full flex items-center justify-center mb-4">
+        <Icon className="text-muted-foreground" size={28} />
+      </div>
+      <h2 className="text-foreground font-semibold">{title}</h2>
+      <p className="text-sm text-muted-foreground mt-1 max-w-[280px]">{description}</p>
+      <p className="text-[10px] text-muted-foreground/50 mt-4 font-mono uppercase tracking-wider">
+        Kode: {code}
+      </p>
+    </div>
+  );
+}';
 
 - '/ui/badge,button,card,dialog,dropdown-menu,input,label,select,sheet,sonner,switch,table,textarea, /lib/utils default shacn baseui';
 
@@ -3046,7 +3587,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
   );
 }';
 
-- '!edit // coteadmin/src/app/(app)/error.tsx
+- '// coteadmin/src/app/(app)/error.tsx
 'use client';
 
 export default function AppError({
@@ -3056,17 +3597,19 @@ export default function AppError({
   error: Error & { digest?: string };
   reset: () => void;
 }) {
-  const isRateLimit = error.message.toLowerCase().includes('too many') || error.message.includes('429');
+  // const isRateLimit = error.message.toLowerCase().includes('too many') || error.message.includes('429');
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center px-6 text-center">
       <p className="text-sm text-muted-foreground mb-1">
-        {isRateLimit ? 'Kebanyakan request dalam waktu singkat.' : 'Ada yang gak beres.'}
+        {/* {isRateLimit ? 'Kebanyakan request dalam waktu singkat.' : 'Ada yang gak beres.'} */}
+        Maaf, Ada yang error atau gak beres.
       </p>
       <p className="text-xs text-muted-foreground/70 mb-6">
-        {isRateLimit ? 'Tunggu sebentar, terus coba lagi.' : error.message}
+        {/* {isRateLimit ? 'Tunggu sebentar, terus coba lagi.' : error.message} */}
+        Coba lagi dalam beberapa saat. Kalau masih gagal, hubungi admin.
       </p>
-      <button onClick={() => reset()} className="bg-primary text-primary-foreground rounded-lg px-4 py-2 text-sm font-medium">
+      <button onClick={() => reset()} className="bg-primary text-primary-foreground rounded-lg px-4 py-2 text-sm font-medium cursor-pointer">
         Coba Lagi
       </button>
     </div>
@@ -3618,7 +4161,7 @@ export async function logout() {
   redirect("/login");
 }';
 
-- '!edit // coteadmin/src/app/(app)/profile/page.tsx
+- '// coteadmin/src/app/(app)/profile/page.tsx
 import { getCurrentUserEmail } from '@/lib/session';
 import { logout } from './actions';
 import { Card, CardContent } from '@/components/ui/card';
@@ -3640,7 +4183,7 @@ export default async function ProfilePage() {
       </Card>
 
       <form action={logout}>
-        <Button type="submit" variant="outline" className="w-full h-11 font-medium border-destructive text-destructive hover:bg-destructive/10 hover:text-destructive">
+        <Button type="submit" variant="outline" className="w-full h-11 font-medium border-destructive text-destructive hover:bg-destructive/10 hover:text-destructive cursor-pointer">
           Keluar
         </Button>
       </form>
@@ -5899,7 +6442,7 @@ export default async function TransactionsPage({
   );
 }';
 
-- 'TransactionFilterBar';
+- 'TransactionList, TransactionFilterBar';
 
 - '!edit // coteadmin/src/app/(app)/transactions/MarkPaidInline.tsx
 'use client';
@@ -7411,3 +7954,4 @@ export function ExportButton({ startDate, endDate, compareStartDate, compareEndD
     </div>
   );
 }';
+
