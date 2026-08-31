@@ -8,6 +8,7 @@ import { cn } from '@/lib/utils';
 import {
   TrendingUp, TrendingDown, Wallet, ShoppingCart, Receipt, Medal, CreditCard,
   Activity, TicketPercent, Minus, Calculator, PieChart,
+  Users,
 } from 'lucide-react';
 import { ExportButton } from './ExportButton';
 import { ReportTabs } from './ReportTabs';
@@ -26,6 +27,7 @@ type NetProfit = { revenue: number; cogs: number; grossProfit: number; operating
 type ExpenseByCategory = { category: string; total: number; count: number };
 type IncomeByCategory = { category: string; total: number; count: number };
 type CashFlowPoint = { date: string; totalIn: number; totalOut: number; net: number };
+type TopCustomer = { customerId: string; customerName: string; totalOrders: number; totalSpent: number };
 
 const EXPENSE_CATEGORY_LABEL: Record<string, string> = {
   EXPENSE: 'Operasional',
@@ -94,6 +96,7 @@ export default async function AdvancedReportsPage({
   let expenseByCategory: ExpenseByCategory[];
   let incomeByCategory: IncomeByCategory[];
   let cashFlowTrend: CashFlowPoint[];
+  let topCustomers: TopCustomer[];
   let compareSummary: Summary | null = null;
   let comparePromo: PromoBudget | null = null;
   let compareNetProfit: NetProfit | null = null;
@@ -101,7 +104,7 @@ export default async function AdvancedReportsPage({
   try {
     const [
       summaryRes, topItemsRes, trendRes, paymentRes, promoRes, netProfitRes,
-      expenseCategoryRes, incomeCategoryRes, cashFlowRes,
+      expenseCategoryRes, incomeCategoryRes, cashFlowRes, topCustomersRes,
     ] = await Promise.all([
       cotebek<{ data: Summary }>(`/reports/summary${qs}`),
       cotebek<{ data: TopItem[] }>(`/reports/top-items${qs}`),
@@ -112,6 +115,7 @@ export default async function AdvancedReportsPage({
       cotebek<{ data: ExpenseByCategory[] }>(`/reports/expense-by-category${qs}`),
       cotebek<{ data: IncomeByCategory[] }>(`/reports/income-by-category${qs}`),
       cotebek<{ data: CashFlowPoint[] }>(`/reports/cash-flow-trend${qs}`),
+      cotebek<{ data: TopCustomer[] }>(`/reports/top-customers${qs}`),
     ]);
     summary = summaryRes.data;
     topItems = topItemsRes.data;
@@ -122,6 +126,7 @@ export default async function AdvancedReportsPage({
     expenseByCategory = expenseCategoryRes.data;
     incomeByCategory = incomeCategoryRes.data;
     cashFlowTrend = cashFlowRes.data;
+    topCustomers = topCustomersRes.data;
 
     if (hasCompare) {
       const compareQs = `?startDate=${compareStartDate}&endDate=${compareEndDate}`;
@@ -396,6 +401,40 @@ export default async function AdvancedReportsPage({
     </div>
   );
 
+  const pelangganContent = (
+  <div className="space-y-4">
+    <Card className="overflow-hidden border-border shadow-sm">
+      <CardHeader className="border-b border-border/60 px-4 pb-3 pt-4">
+        <SectionHeader icon={Users} color="chart-3" title="Pelanggan Teratas" />
+        <p className="mt-1 text-xs text-muted-foreground">Berdasarkan total belanja dalam periode ini</p>
+      </CardHeader>
+      <CardContent className="p-0">
+        {topCustomers.length === 0 ? (
+          <p className="py-6 text-center text-sm text-muted-foreground">Belum ada data pelanggan.</p>
+        ) : (
+          <ul className="divide-y divide-border">
+            {topCustomers.map((c, i) => (
+              <li key={c.customerId} className="flex items-center justify-between gap-4 px-4 py-3.5 transition-colors hover:bg-muted/40">
+                <div className="flex min-w-0 items-center gap-3">
+                  <div className={cn('flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-xs font-bold',
+                    i === 0 ? 'bg-amber-500/15 text-amber-600' : i === 1 ? 'bg-slate-500/10 text-slate-600 dark:text-slate-300' : i === 2 ? 'bg-orange-500/15 text-orange-600' : 'bg-muted text-muted-foreground')}>
+                    {i + 1}
+                  </div>
+                  <div className="min-w-0">
+                    <div className="truncate text-sm font-medium text-foreground">{c.customerName}</div>
+                    <div className="text-[10px] text-muted-foreground">{c.totalOrders} order</div>
+                  </div>
+                </div>
+                <span className="shrink-0 text-sm font-bold text-foreground">{formatRupiah(c.totalSpent)}</span>
+              </li>
+            ))}
+          </ul>
+        )}
+      </CardContent>
+    </Card>
+  </div>
+);
+
   return (
     <div className="mx-auto w-full max-w-5xl space-y-5 px-4 pb-24 pt-5 sm:px-6">
       <PageHeader title="Laporan Lanjutan" subtitle="Filter kustom & komparasi data" backHref="/reports" />
@@ -416,6 +455,7 @@ export default async function AdvancedReportsPage({
           { id: 'ringkasan', label: 'Ringkasan', content: ringkasanContent },
           { id: 'penjualan', label: 'Penjualan', content: penjualanContent },
           { id: 'arus-kas', label: 'Arus Kas', content: arusKasContent },
+          { id: 'pelanggan', label: 'Pelanggan', content: pelangganContent },
         ]}
       />
     </div>

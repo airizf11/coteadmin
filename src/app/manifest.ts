@@ -10,7 +10,7 @@ export default async function manifest(): Promise<MetadataRoute.Manifest> {
     description: `Manajemen usaha untuk ${b.businessName}`,
     start_url: "/dashboard",
     display: "standalone",
-    background_color: "#ffffff",
+    background_color: "#eeeeee",
     theme_color: b.primaryColor,
     icons: [
       { src: "/icon-192.png", sizes: "192x192", type: "image/png" },

@@ -2113,7 +2113,7 @@ export default async function HomePage() {
   );
 }';
 
-- '// coteadmin/src/app/manifest.ts
+- '!edit // coteadmin/src/app/manifest.ts
 import { getBranding } from "@/lib/branding";
 import type { MetadataRoute } from "next";
 

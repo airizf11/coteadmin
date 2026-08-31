@@ -14,9 +14,12 @@ import {
   BarChart3,
   ShoppingBag,
   Sparkles,
+  CheckCircle2,
+  AlertCircle,
 } from 'lucide-react';
 import { DashboardSkeleton } from './DashboardSkeleton';
 import { formatRupiah } from '@/lib/format';
+import { cn } from '@/lib/utils';
 
 type Overview = {
   ordersToday: number;
@@ -33,6 +36,7 @@ type StaffDashboard = {
   windowDays: number;
   totalOrders: number;
   statusBreakdown: StatusBreakdown;
+  paymentBreakdown: { PAID: number; UNPAID: number };
 };
 
 const ROLE_LABEL: Record<string, string> = {
@@ -197,6 +201,46 @@ function StaffView({ data: s }: { data: StaffDashboard }) {
         />
 
         <StatusGrid breakdown={s.statusBreakdown} />
+      </div>
+
+      <div>
+        <SectionHeading
+          title="Status Pembayaran"
+          description={`${s.windowDays} hari terakhir`}
+        />
+
+        <div className="grid grid-cols-2 gap-3">
+          <Link href="/orders?paymentStatus=PAID" className="block rounded-2xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
+            <Card className="border-success/20 bg-success/5 shadow-sm transition-all hover:shadow-md">
+              <CardContent className="p-4">
+                <div className="flex items-center gap-2 text-success">
+                  <CheckCircle2 size={16} />
+                  <span className="text-[11px] font-semibold uppercase tracking-wider">Lunas</span>
+                </div>
+                <div className="mt-2 text-2xl font-bold text-success">{s.paymentBreakdown.PAID}</div>
+              </CardContent>
+            </Card>
+          </Link>
+
+          <Link href="/orders?paymentStatus=UNPAID" className="block rounded-2xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
+            <Card
+              className={cn(
+                'shadow-sm transition-all hover:shadow-md',
+                s.paymentBreakdown.UNPAID > 0 ? 'border-destructive/30 bg-destructive/5' : 'border-border bg-card',
+              )}
+            >
+              <CardContent className="p-4">
+                <div className={cn('flex items-center gap-2', s.paymentBreakdown.UNPAID > 0 ? 'text-destructive' : 'text-muted-foreground')}>
+                  <AlertCircle size={16} />
+                  <span className="text-[11px] font-semibold uppercase tracking-wider">Belum Lunas</span>
+                </div>
+                <div className={cn('mt-2 text-2xl font-bold', s.paymentBreakdown.UNPAID > 0 ? 'text-destructive' : 'text-foreground')}>
+                  {s.paymentBreakdown.UNPAID}
+                </div>
+              </CardContent>
+            </Card>
+          </Link>
+        </div>
       </div>
 
       <Link
