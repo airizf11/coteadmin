@@ -19,6 +19,7 @@ export async function saveSettings(formData: FormData) {
   const dashboardWindowDays = (
     formData.get("dashboard_window_days") as string
   )?.trim();
+  const orderFlow = (formData.get("order_flow") as string)?.trim();
 
   try {
     await cotebek("/app-settings/bulk", {
@@ -35,6 +36,7 @@ export async function saveSettings(formData: FormData) {
           { key: "primary_color", value: primaryColor },
           { key: "website_url", value: websiteUrl },
           { key: "dashboard_window_days", value: dashboardWindowDays },
+          { key: "order_flow", value: orderFlow },
         ],
       },
     });

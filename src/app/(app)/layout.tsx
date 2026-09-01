@@ -6,6 +6,7 @@ import { cotebek } from '@/lib/cotebek';
 import { NoAccessScreen } from './NoAccessScreen';
 import { ThemeToggle } from '@/components/ThemeToggle';
 import { PrivacyToggle } from '@/components/PrivacyToggle';
+import { ConnectionIndicator } from '@/components/ConnectionIndicator';
 
 // export const dynamic = 'force-dynamic';
 
@@ -29,10 +30,11 @@ export default async function AppLayout({ children }: { children: React.ReactNod
               <Store size={18} />
             </div>
             <span className="font-heading font-bold text-xl text-primary tracking-tight truncate">
-              {b.businessName} by CoTE
+              {b.businessName}
             </span>
           </Link>
           <div className="flex items-center gap-1">
+            <ConnectionIndicator />
             <PrivacyToggle />
             <ThemeToggle />
           </div>

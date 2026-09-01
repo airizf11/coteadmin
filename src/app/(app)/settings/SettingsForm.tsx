@@ -19,7 +19,8 @@ import {
   CheckCircle2, 
   AlertCircle, 
   Palette,
-  Clock
+  Clock,
+  ListChecks
 } from 'lucide-react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
@@ -35,6 +36,7 @@ type Settings = {
   primary_color?: string;
   website_url?: string;
   dashboard_window_days?: string;
+  order_flow?: string[];
 };
 
 export function SettingsForm({ settings }: { settings: Settings }) {
@@ -46,10 +48,23 @@ export function SettingsForm({ settings }: { settings: Settings }) {
   const [orderPrefix, setOrderPrefix] = useState(settings.order_prefix ?? 'ORD');
   const [txPrefix, setTxPrefix] = useState(settings.tx_prefix ?? 'TRX');
 
+  const [businessName, setBusinessName] = useState(settings.business_name ?? '');
   const [businessType, setBusinessType] = useState(settings.business_type ?? 'JASA');
-  const [primaryColor, setPrimaryColor] = useState(settings.primary_color ?? '#f0a500');
+  const [businessPhone, setBusinessPhone] = useState(settings.business_phone ?? '');
+  const [businessAddress, setBusinessAddress] = useState(settings.business_address ?? '');
+
   const [websiteUrl, setWebsiteUrl] = useState(settings.website_url ?? '');
+  const [receiptFooter, setReceiptFooter] = useState(settings.receipt_footer ?? '');
+
+  const [primaryColor, setPrimaryColor] = useState(settings.primary_color ?? '#f0a500');
   const [dashboardWindowDays, setDashboardWindowDays] = useState(settings.dashboard_window_days ?? '7');
+  const [orderFlow, setOrderFlow] = useState<string[]>(
+    Array.isArray(settings.order_flow) ? settings.order_flow : ['IN_PROCESS', 'READY'],
+  );
+
+  function togglePhase(phase: string) {
+    setOrderFlow((prev) => (prev.includes(phase) ? prev.filter((p) => p !== phase) : [...prev, phase]));
+  }
 
   // Menghasilkan string tanggal hari ini untuk preview (Contoh: 20260711)
   const todayStr = new Date().toISOString().slice(0, 10).replace(/-/g, '');
@@ -90,7 +105,8 @@ export function SettingsForm({ settings }: { settings: Settings }) {
             </Label>
             <Input 
               name="business_name" 
-              defaultValue={settings.business_name ?? ''} 
+              value={businessName}
+              onChange={(e) => setBusinessName(e.target.value)}
               className="h-11 bg-background font-medium" 
               placeholder="cth: Toko Berkah Jaya" 
             />
@@ -102,7 +118,8 @@ export function SettingsForm({ settings }: { settings: Settings }) {
             </Label>
             <Input 
               name="business_phone" 
-              defaultValue={settings.business_phone ?? ''} 
+              value={businessPhone}
+              onChange={(e) => setBusinessPhone(e.target.value)}
               className="h-11 bg-background" 
               placeholder="cth: 081234567890" 
             />
@@ -115,7 +132,8 @@ export function SettingsForm({ settings }: { settings: Settings }) {
             {/* Menggunakan textarea standar Tailwind agar alamat panjang bisa muat */}
             <textarea 
               name="business_address" 
-              defaultValue={settings.business_address ?? ''} 
+              value={businessAddress}
+              onChange={(e) => setBusinessAddress(e.target.value)}
               className="flex w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 min-h-[80px] resize-none"
               placeholder="cth: Jl. Sudirman No. 123, Surabaya"
             />
@@ -140,7 +158,8 @@ export function SettingsForm({ settings }: { settings: Settings }) {
             </Label>
             <Textarea
               name="receipt_footer" 
-              defaultValue={settings.receipt_footer ?? ''} 
+              value={receiptFooter}
+              onChange={(e) => setReceiptFooter(e.target.value)}
               className="h-11 bg-background" 
               placeholder="cth: Terima kasih telah mencuci di tempat kami!" 
             />
@@ -220,6 +239,39 @@ export function SettingsForm({ settings }: { settings: Settings }) {
          </p>
        </CardContent>
      </Card>
+
+     <Card className="shadow-sm border-border">
+  <CardHeader className="pb-4 border-b border-border/50">
+    <CardTitle className="text-base font-bold flex items-center gap-2">
+      <ListChecks size={18} className="text-primary" /> Alur Status Order
+    </CardTitle>
+    <CardDescription className="text-xs">
+      Pilih fase yang dipakai usahamu. Diterima & Selesai selalu ada.
+    </CardDescription>
+  </CardHeader>
+  <CardContent className="p-4 space-y-3">
+    <input type="hidden" name="order_flow" value={JSON.stringify(orderFlow)} />
+    <label className="flex items-center gap-3 p-3 rounded-lg border border-border cursor-pointer hover:bg-muted/40 transition-colors">
+      <input type="checkbox" checked={orderFlow.includes('IN_PROCESS')} onChange={() => togglePhase('IN_PROCESS')} className="h-4 w-4 accent-primary" />
+      <div>
+        <div className="text-sm font-medium">Diproses</div>
+        <div className="text-xs text-muted-foreground">Order butuh waktu pengerjaan (laundry, servis, dll).</div>
+      </div>
+    </label>
+    <label className="flex items-center gap-3 p-3 rounded-lg border border-border cursor-pointer hover:bg-muted/40 transition-colors">
+      <input type="checkbox" checked={orderFlow.includes('READY')} onChange={() => togglePhase('READY')} className="h-4 w-4 accent-primary" />
+      <div>
+        <div className="text-sm font-medium">Siap Diambil</div>
+        <div className="text-xs text-muted-foreground">Ada jeda antara "selesai dikerjakan" dan "diambil".</div>
+      </div>
+    </label>
+    <div className="text-xs text-muted-foreground bg-muted/50 p-2 rounded-md mt-1">
+      Alur sekarang: <span className="font-semibold text-foreground">
+        Diterima{orderFlow.includes('IN_PROCESS') ? ' → Diproses' : ''}{orderFlow.includes('READY') ? ' → Siap Diambil' : ''} → Selesai
+      </span>
+    </div>
+  </CardContent>
+</Card>
 
       {/* 2. KARTU FORMAT PENOMORAN */}
       <Card className="shadow-sm border-border">

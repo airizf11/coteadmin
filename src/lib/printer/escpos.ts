@@ -66,6 +66,22 @@ export class EscPos {
     return result;
   }
 
+  static qrCode(data: string, size = 6): Uint8Array {
+    const dataBytes = this.encoder.encode(data);
+    const storeLen = dataBytes.length + 3;
+    const pL = storeLen & 0xff;
+    const pH = (storeLen >> 8) & 0xff;
+
+    return this.concat(
+      this.raw(0x1d, 0x28, 0x6b, 0x04, 0x00, 0x31, 0x41, 0x32, 0x00), // model 2
+      this.raw(0x1d, 0x28, 0x6b, 0x03, 0x00, 0x31, 0x43, size), // ukuran modul
+      this.raw(0x1d, 0x28, 0x6b, 0x03, 0x00, 0x31, 0x45, 0x31), // error-correction level M
+      this.raw(0x1d, 0x28, 0x6b, pL, pH, 0x31, 0x50, 0x30), // simpen data
+      dataBytes,
+      this.raw(0x1d, 0x28, 0x6b, 0x03, 0x00, 0x31, 0x51, 0x30), // cetak
+    );
+  }
+
   static hello(): Uint8Array {
     return this.concat(this.init(), this.text("HELLO"), this.lf(2));
   }
@@ -122,6 +138,8 @@ export class EscPos {
       dueDate: string | null;
       handledByName: string | null;
       trackingToken?: string | null;
+      note?: string | null;
+      trackUrl?: string | null;
     };
     customer: { name: string | null };
     items: { itemName: string; qty: number; price: number; subtotal: number }[];
@@ -212,6 +230,11 @@ export class EscPos {
     }
     parts.push(this.text(divider), this.lf());
 
+    if (data.order.note) {
+      parts.push(this.text(divider), this.lf());
+      parts.push(this.text(`Ket: ${data.order.note}`), this.lf());
+    }
+
     // Total, bayar, status, kasir
     parts.push(
       this.text(line("Subtotal", formatRupiah(data.summary.subtotal))),
@@ -247,6 +270,15 @@ export class EscPos {
     if (data.order.handledByName) {
       parts.push(this.text(line("Kasir", data.order.handledByName)), this.lf());
     }
+
+    // temp off
+    /* if (data.order.trackUrl) {
+      parts.push(this.text(divider), this.lf());
+      parts.push(this.alignCenter());
+      parts.push(this.qrCode(data.order.trackUrl));
+      parts.push(this.lf());
+      parts.push(this.alignLeft());
+    } */
 
     parts.push(this.text(divider), this.lf());
 

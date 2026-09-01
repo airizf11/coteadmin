@@ -4,11 +4,13 @@ import { cotebek } from '@/lib/cotebek';
 import { BlePrintButton } from './BlePrintButton';
 import { ReceiptWaButton } from './ReceiptWaButton';
 import { formatRupiah } from '@/lib/format';
+import { headers } from 'next/headers';
+import QRCode from 'qrcode';
 
 export type ReceiptData = {
   business: { name: string; address: string | null; phone: string | null; footer: string };
   order: { orderNumber: string; trackingToken: string | null; paymentMethod: string; paymentStatus: 'PAID' | 'UNPAID'; createdAt: string; dueDate: string | null;
-     handledByName: string | null; };
+     handledByName: string | null; note: string | null; };
   customer: { name: string | null; phone: string | null };
   items: { itemName: string; qty: number; price: number; subtotal: number }[];
   summary: { subtotal: number; discountAmount: number; promoName: string | null; total: number };
@@ -18,6 +20,13 @@ export default async function ReceiptPage({ params }: { params: Promise<{ id: st
   const { id } = await params;
   const res = await cotebek<{ data: ReceiptData }>(`/orders/${id}/receipt`);
   const r = res.data;
+
+  const h = await headers();
+  const appUrl = `${h.get('x-forwarded-proto') ?? 'https'}://${h.get('host')}`;
+  const trackUrl = r.order.trackingToken ? `${appUrl}/track/${r.order.trackingToken}` : null;
+  const qrSvg = trackUrl
+    ? await QRCode.toString(trackUrl, { type: 'svg', margin: 0, width: 110 })
+    : null;
 
   return (
     <div className="p-4">
@@ -40,6 +49,9 @@ export default async function ReceiptPage({ params }: { params: Promise<{ id: st
            <div className="flex justify-between"><span>Kode Lacak</span><span>{r.order.trackingToken}</span></div>
          )}
           <div className="flex justify-between"><span>Tanggal</span><span>{new Date(r.order.createdAt).toLocaleString('id-ID')}</span></div>
+          {r.order.dueDate && (
+            <div className="flex justify-between"><span>Estimasi Selesai</span><span>{new Date(r.order.dueDate).toLocaleString('id-ID')}</span></div>
+          )}
           {r.customer.name && <div className="flex justify-between"><span>Customer</span><span>{r.customer.name}</span></div>}
         </div>
 
@@ -54,6 +66,12 @@ export default async function ReceiptPage({ params }: { params: Promise<{ id: st
             </div>
           ))}
         </div>
+
+        {r.order.note && (
+          <div className="border-t border-dashed border-black py-2">
+            <div className="flex justify-between"><span>Keterangan</span><span>{r.order.note}</span></div>
+          </div>
+        )}
 
         <div className="border-t border-dashed border-black py-2 space-y-0.5">
           <div className="flex justify-between"><span>Subtotal</span><span>{formatRupiah(r.summary.subtotal)}</span></div>
@@ -77,6 +95,13 @@ export default async function ReceiptPage({ params }: { params: Promise<{ id: st
           <div className="flex justify-between"><span>Kasir</span><span>{r.order.handledByName}</span></div>
         )}
         </div>
+
+        {qrSvg && (
+          <div className="border-t border-dashed border-black py-3 flex flex-col items-center gap-1">
+            <div dangerouslySetInnerHTML={{ __html: qrSvg }} />
+            <span className="text-[9px] text-gray-500">Scan untuk status Order</span>
+          </div>
+        )}
 
         <div className="border-t border-dashed border-black pt-2 text-center">{r.business.footer}</div>
       </div>

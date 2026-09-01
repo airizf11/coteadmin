@@ -1,21 +1,10 @@
 // coteadmin/src/app/api/reports/export/route.ts
 import { NextRequest, NextResponse } from "next/server";
-import { getStaffToken } from "@/lib/session";
-
-const API_URL = process.env.COTEBEK_API_URL!;
-const API_KEY = process.env.COTEBEK_API_KEY!;
+import { cotebekProxy } from "@/lib/cotebek";
 
 export async function GET(req: NextRequest) {
-  const token = await getStaffToken();
   const qs = req.nextUrl.search;
-
-  const res = await fetch(`${API_URL}/reports/export${qs}`, {
-    headers: {
-      "x-api-key": API_KEY,
-      ...(token ? { Authorization: `Bearer ${token}` } : {}),
-    },
-    cache: "no-store",
-  });
+  const res = await cotebekProxy(`/reports/export${qs}`);
 
   if (!res.ok) {
     return NextResponse.json(
@@ -24,16 +13,12 @@ export async function GET(req: NextRequest) {
     );
   }
 
-  const buffer = await res.arrayBuffer();
-  const filename =
-    res.headers.get("content-disposition")?.match(/filename="(.+)"/)?.[1] ??
-    "laporan.xlsx";
-
-  return new NextResponse(buffer, {
+  return new NextResponse(res.body, {
     headers: {
       "Content-Type":
-        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-      "Content-Disposition": `attachment; filename="${filename}"`,
+        res.headers.get("content-type") ?? "application/octet-stream",
+      "Content-Disposition":
+        res.headers.get("content-disposition") ?? "attachment",
     },
   });
 }

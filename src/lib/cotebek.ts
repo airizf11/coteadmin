@@ -44,6 +44,27 @@ export async function cotebekPublic<T = unknown>(
   return res.json();
 }
 
+export async function cotebekProxy(
+  path: string,
+  init: { method?: string; body?: BodyInit } = {},
+): Promise<Response> {
+  const token = await getStaffToken();
+  const headers = new Headers();
+  headers.set("x-api-key", API_KEY);
+  if (token) headers.set("Authorization", `Bearer ${token}`);
+
+  try {
+    return await fetch(`${BASE_URL}${path}`, {
+      method: init.method ?? "GET",
+      headers,
+      body: init.body,
+      cache: "no-store",
+    });
+  } catch {
+    throw new ApiError("Gagal terhubung ke server.", 0);
+  }
+}
+
 export async function cotebek<T = unknown>(
   path: string,
   opts: FetchOpts = {},

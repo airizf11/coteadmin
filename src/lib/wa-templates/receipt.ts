@@ -15,6 +15,8 @@ type ReceiptWaParams = {
     paymentStatus: "PAID" | "UNPAID";
     createdAt: string;
     dueDate: string | null;
+    handledByName: string | null;
+    note: string | null;
   };
   customer: { name: string | null };
   items: { itemName: string; qty: number; price: number; subtotal: number }[];
@@ -44,8 +46,16 @@ export function buildReceiptMessage(params: ReceiptWaParams): string {
     `Berikut struk untuk order *${params.order.orderNumber}*:`,
     "",
     "━━━━━━━━━━━━━━━",
+    `Tanggal Masuk: ${new Date(params.order.createdAt).toLocaleString("id-ID", { dateStyle: "medium", timeStyle: "short" })}`,
+    ...(params.order.dueDate
+      ? [
+          `Estimasi Selesai: ${new Date(params.order.dueDate).toLocaleString("id-ID", { dateStyle: "medium", timeStyle: "short" })}`,
+        ]
+      : []),
+    "━━━━━━━━━━━━━━━",
     ...itemLines,
     "━━━━━━━━━━━━━━━",
+    ...(params.order.note ? ["", `Keterangan: ${params.order.note}`] : []),
     "",
     `Subtotal: ${formatRupiah(params.summary.subtotal)}`,
     ...(params.summary.discountAmount > 0

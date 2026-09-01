@@ -1,4 +1,4 @@
-// adminqinq/src/app/(app)/audit-logs/page.tsx
+// coteadmin/src/app/(app)/audit-logs/page.tsx
 import { cotebek } from '@/lib/cotebek';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';

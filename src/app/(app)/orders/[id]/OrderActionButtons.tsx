@@ -14,9 +14,11 @@ import {
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { buildOrderUpdateMessage } from '@/lib/wa-templates';
-import { STATUS_CONFIG, TRANSITIONS } from '@/lib/constants/order-status';
+import { STATUS_CONFIG, buildTransitions// , TRANSITIONS
+} from '@/lib/constants/order-status';
 import { PAYMENT_METHODS } from '@/lib/constants/payment';
 import { waLink } from '@/lib/whatsapp';
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 
 // --- DATA & CONFIG ---
 // --- MAIN COMPONENT ---
@@ -31,6 +33,7 @@ type OrderActionButtonsProps = {
   trackingToken: string | null;
   createdAt: string;
   statusHistory: { status: string | null; timestamp: string }[];
+  enabledPhases: string[];
 };
 
 export function OrderActionButtons(props: OrderActionButtonsProps) {
@@ -38,6 +41,7 @@ export function OrderActionButtons(props: OrderActionButtonsProps) {
   const [isPaying, setIsPaying] = useState(false);
   const [showPayForm, setShowPayForm] = useState(false);
   const [pendingStatus, setPendingStatus] = useState<string | null>(null);
+  const [confirmTarget, setConfirmTarget] = useState<string | null>(null);
 
   // 1. Handler Mark Paid
   async function handleMarkPaid() {
@@ -92,7 +96,11 @@ export function OrderActionButtons(props: OrderActionButtonsProps) {
     window.open(waLink(props.customerPhone, message), '_blank', 'noopener,noreferrer');
   }
 
-  const statusOptions = TRANSITIONS[props.currentStatus] ?? [];
+  // V1
+  // const statusOptions = TRANSITIONS[props.currentStatus] ?? [];
+
+  // V2
+  const statusOptions = buildTransitions(props.enabledPhases)[props.currentStatus] ?? [];
 
   return (
     <div className="space-y-3">
@@ -150,7 +158,7 @@ export function OrderActionButtons(props: OrderActionButtonsProps) {
       // Kita pastikan semua rata kiri dengan 'justify-start'
       className="w-full h-11 shadow-sm cursor-pointer" 
       disabled={pendingStatus !== null}
-      onClick={() => handleUpdateStatus(opt.status)}
+      onClick={() => (opt.danger ? setConfirmTarget(opt.status) : handleUpdateStatus(opt.status))}
     >
       {isThisPending ? (
         <Loader2 size={18} className="animate-spin mr-2 opacity-70" />
@@ -184,6 +192,37 @@ export function OrderActionButtons(props: OrderActionButtonsProps) {
           Order ini telah {STATUS_CONFIG[props.currentStatus]?.label?.toLowerCase()} dan difinalisasi.
         </p>
       )}
+
+      <Dialog open={!!confirmTarget} onOpenChange={(open) => !open && setConfirmTarget(null)}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Batalkan Order?</DialogTitle>
+            <DialogDescription>
+              Order <strong>{props.orderNumber}</strong> akan dibatalkan
+              {props.paymentStatus === 'PAID'
+                ? ', dan pembayaran yang udah masuk otomatis dicatat sebagai penyesuaian (adjustment) di kas'
+                : ''}
+              . Tindakan ini gak bisa dibatalkan lagi.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setConfirmTarget(null)}>
+              Batal
+            </Button>
+            <Button
+              variant="destructive"
+              disabled={pendingStatus !== null}
+              onClick={() => {
+                if (confirmTarget) handleUpdateStatus(confirmTarget);
+                setConfirmTarget(null);
+              }}
+            >
+              {pendingStatus !== null && <Loader2 size={16} className="animate-spin mr-2" />}
+              Ya, Batalkan Order
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
     </div>
   );

@@ -43,11 +43,26 @@ type TrackingData = { statusHistory: { status: string | null; timestamp: string 
 
 export default async function OrderDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  const res = await cotebek<{ data: OrderDetail }>(`/orders/${id}`);
+  // V1
+  /* const res = await cotebek<{ data: OrderDetail }>(`/orders/${id}`);
+  const order = res.data;
+
+  const trackRes = await cotebek<{ data: TrackingData }>(`/orders/track/${order.orderNumber}`);
+  const statusHistory = trackRes.data.statusHistory; */
+
+  // V2
+  const [res, settingsRes] = await Promise.all([
+    cotebek<{ data: OrderDetail }>(`/orders/${id}`),
+    cotebek<{ data: { order_flow?: string[] } }>('/app-settings'),
+  ]);
   const order = res.data;
 
   const trackRes = await cotebek<{ data: TrackingData }>(`/orders/track/${order.orderNumber}`);
   const statusHistory = trackRes.data.statusHistory;
+
+  const enabledPhases: string[] = Array.isArray(settingsRes.data.order_flow)
+    ? settingsRes.data.order_flow
+    : ['IN_PROCESS', 'READY'];
 
   const statusVisual = STATUS_CONFIG[order.status] || { label: order.status, color: 'bg-muted text-muted-foreground' };
 
@@ -227,6 +242,7 @@ export default async function OrderDetailPage({ params }: { params: Promise<{ id
           trackingToken={order.trackingToken}
           createdAt={order.createdAt}
           statusHistory={statusHistory}
+          enabledPhases={enabledPhases}
         />
 
         {/* Tombol Cetak Struk */}

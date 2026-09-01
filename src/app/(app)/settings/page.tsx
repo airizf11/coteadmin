@@ -15,6 +15,7 @@ type Settings = {
   primary_color?: string;
   website_url?: string;
   dashboard_window_days?: string;
+  order_flow?: string[];
 };
 
 export default async function SettingsPage() {

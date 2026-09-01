@@ -19,7 +19,18 @@ export function BlePrintButton({ data }: { data: ReceiptData }) {
         await printer.connect();
       }
       setStatus('printing');
+
       await printer.write(EscPos.receipt(data), { chunkSize: 200, delay: 20 });
+
+      // temp off
+      /* const trackUrl = data.order.trackingToken
+        ? `${window.location.origin}/track/${data.order.trackingToken}`
+        : null;
+      await printer.write(
+        EscPos.receipt({ ...data, order: { ...data.order, trackUrl } }),
+        { chunkSize: 200, delay: 20 },
+      ); */
+
       setStatus('connected');
     } catch (err) {
       setStatus('error');
