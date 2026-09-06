@@ -19,6 +19,7 @@ import {
 import { DashboardSkeleton } from './DashboardSkeleton';
 import { cn } from '@/lib/utils';
 import { Money } from '@/components/Money';
+import { SystemHealthCard } from '@/components/SystemHealthCard';
 
 type Overview = {
   ordersToday: number;
@@ -69,6 +70,8 @@ export default async function DashboardPage() {
 
   return (
     <div className="p-4 pb-10 md:p-6 md:pb-12 space-y-6">
+      <SystemHealthCard />
+
       <div className="relative overflow-hidden rounded-2xl border border-border bg-card shadow-sm">
         <div className="absolute -right-10 -top-10 h-32 w-32 rounded-full bg-primary/10 blur-2xl" />
         <div className="absolute -bottom-12 left-1/3 h-24 w-24 rounded-full bg-info/5 blur-2xl" />
@@ -285,6 +288,8 @@ function StaffView({ data: s }: { data: StaffDashboard }) {
   );
 }
 
+const todayStr = new Date().toISOString().split('T')[0]; // Menghasilkan "YYYY-MM-DD" dinamis
+
 function AdminView({
   overview: o,
   breakdown,
@@ -348,27 +353,45 @@ function AdminView({
         />
 
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-          <MetricCard
-            icon={<Wallet size={16} />}
-            label="Omzet Hari Ini"
-            value={<Money value={o.revenueToday} />}
-            tone="success"
-          />
+          <Link
+         href={`/reports?startDate=${todayStr}&endDate=${todayStr}`}
+         className="block rounded-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+       >
+         <MetricCard
+           icon={<Wallet size={16} />}
+           label="Omzet Hari Ini"
+           value={<Money value={o.revenueToday} />}
+           tone="success"
+           interactive
+         />
+       </Link>
 
-          <MetricCard
-            icon={<ShoppingBag size={16} />}
-            label="Order Hari Ini"
-            value={o.ordersToday.toLocaleString('id-ID')}
-            tone="info"
-          />
+          <Link
+         href={`/orders?startDate=${todayStr}&endDate=${todayStr}`}
+         className="block rounded-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+       >
+         <MetricCard
+           icon={<ShoppingBag size={16} />}
+           label="Order Hari Ini"
+           value={o.ordersToday.toLocaleString('id-ID')}
+           tone="info"
+           interactive
+         />
+       </Link>
 
-          <MetricCard
-            icon={<ListChecks size={16} />}
-            label="Total Order"
-            value={o.totalOrders.toLocaleString('id-ID')}
-            tone="default"
-            description="Sejak awal"
-          />
+          <Link
+         href="/orders"
+         className="block rounded-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+       >
+         <MetricCard
+           icon={<ListChecks size={16} />}
+           label="Total Order"
+           value={o.totalOrders.toLocaleString('id-ID')}
+           tone="default"
+           description="Sejak awal"
+           interactive
+         />
+       </Link>
 
           <Link
             href="/customers"

@@ -7,6 +7,7 @@ import { cn } from "@/lib/utils";
 import { Toaster } from 'sonner';
 import { getBranding } from '@/lib/branding';
 import { resolveIconPath } from '@/lib/icons';
+import { buildBrandCss, getThemeManifest } from '@/lib/theme';
 
 const inter = Inter({subsets:['latin'],variable:'--font-sans'});
 
@@ -29,7 +30,13 @@ export async function generateMetadata(): Promise<Metadata> {
 // export const dynamic = 'force-dynamic';
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
-  const b = await getBranding();
+  // V1
+  // const b = await getBranding();
+
+  // V2
+  const [b, theme] = await Promise.all([getBranding(), getThemeManifest()]);
+  const brandCss = buildBrandCss(theme);
+
   return (
     <html lang="id" className={cn("font-sans", inter.variable)}
     suppressHydrationWarning
@@ -52,9 +59,14 @@ export default async function RootLayout({ children }: { children: React.ReactNo
             `,
           }}
         />
+        {brandCss ? (
+          <style id="brand-theme" dangerouslySetInnerHTML={{ __html: brandCss }} />
+        ) : null}
       </head>
 
-      <body style={{ '--primary': b.primaryColor } as React.CSSProperties}>
+      <body
+        style={brandCss ? undefined : ({ '--primary': b.primaryColor } as React.CSSProperties)}
+      >
         <Providers>{children}</Providers>
         <Toaster richColors position="top-center" />
       </body>

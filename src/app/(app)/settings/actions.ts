@@ -20,6 +20,8 @@ export async function saveSettings(formData: FormData) {
     formData.get("dashboard_window_days") as string
   )?.trim();
   const orderFlow = (formData.get("order_flow") as string)?.trim();
+  const printQrEnabled =
+    (formData.get("print_qr_enabled") as string) === "true";
 
   try {
     await cotebek("/app-settings/bulk", {
@@ -37,7 +39,8 @@ export async function saveSettings(formData: FormData) {
           { key: "website_url", value: websiteUrl },
           { key: "dashboard_window_days", value: dashboardWindowDays },
           { key: "order_flow", value: orderFlow },
-        ],
+          { key: "print_qr_enabled", value: printQrEnabled },
+        ].filter((s) => s.value !== undefined && s.value !== null),
       },
     });
   } catch (e) {

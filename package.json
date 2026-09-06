@@ -1,6 +1,6 @@
 {
   "name": "coteadmin",
-  "version": "0.0.56",
+  "version": "0.0.585",
   "private": true,
   "scripts": {
     "dev": "next dev",

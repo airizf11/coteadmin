@@ -44,6 +44,44 @@ export async function cotebekPublic<T = unknown>(
   return res.json();
 }
 
+export async function cotebekPublicPost<T = unknown>(
+  path: string,
+  body: unknown,
+): Promise<T> {
+  const incomingHeaders = await getRequestHeaders();
+  const forwardedFor = incomingHeaders.get("x-forwarded-for");
+  const realIp =
+    forwardedFor?.split(",")[0]?.trim() ??
+    incomingHeaders.get("x-real-ip") ??
+    null;
+
+  let res: Response;
+  try {
+    res = await fetch(`${BASE_URL}${path}`, {
+      method: "POST",
+      headers: {
+        "x-api-key": API_KEY,
+        "Content-Type": "application/json",
+        ...(realIp ? { "x-forwarded-for": realIp } : {}),
+      },
+      body: JSON.stringify(body),
+      cache: "no-store",
+    });
+  } catch {
+    throw new ApiError("Gagal terhubung ke server.", 0);
+  }
+
+  if (!res.ok) {
+    const errBody = await res.json().catch(() => ({}));
+    throw new ApiError(
+      errBody.message ?? `CoTEBek error ${res.status}`,
+      res.status,
+    );
+  }
+
+  return res.json();
+}
+
 export async function cotebekProxy(
   path: string,
   init: { method?: string; body?: BodyInit } = {},

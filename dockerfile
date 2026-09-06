@@ -15,9 +15,9 @@ COPY . .
 # nge-inline nilainya langsung ke JS bundle client — beda dari env
 # server-only yang cukup diinject pas runtime (lihat contoh docker run di bawah)
 ARG NEXT_PUBLIC_GOOGLE_CLIENT_ID
-# ARG NEXT_PUBLIC_APP_URL
 ENV NEXT_PUBLIC_GOOGLE_CLIENT_ID=$NEXT_PUBLIC_GOOGLE_CLIENT_ID
-# ENV NEXT_PUBLIC_APP_URL=$NEXT_PUBLIC_APP_URL
+ARG NEXT_PUBLIC_VAPID_PUBLIC_KEY
+ENV NEXT_PUBLIC_VAPID_PUBLIC_KEY=$NEXT_PUBLIC_VAPID_PUBLIC_KEY
 
 RUN npm run build
 

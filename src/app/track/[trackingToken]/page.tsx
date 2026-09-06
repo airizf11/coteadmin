@@ -22,6 +22,7 @@ import {
   CheckCircle2,
 } from 'lucide-react';
 import { STATUS_CONFIG } from '@/lib/constants/order-status';
+import { NotificationOptIn } from '@/components/notification-opt-in';
 
 type TrackingData = {
   orderNumber: string;
@@ -250,6 +251,10 @@ export default async function TrackOrderPage({
               </div>
             </div>
           </div>
+        )}
+
+        {!isCancelled && data.status !== 'DONE' && (
+          <NotificationOptIn trackingToken={trackingToken} />
         )}
 
         {/* Timeline */}

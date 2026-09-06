@@ -1,7 +1,7 @@
 // coteadmin/src/app/(app)/new/page.tsx
 import Link from 'next/link';
 import { Card } from '@/components/ui/card';
-import { ClipboardList, Wallet, UserPlus, Package, Paperclip, ChevronRight } from 'lucide-react';
+import { ClipboardList, Wallet, UserPlus, Package, Paperclip, ChevronRight, Archive } from 'lucide-react';
 
 const NEW_ITEMS = [
   { href: '/new/orders', label: 'Order Baru', icon: ClipboardList, ready: true },
@@ -9,6 +9,7 @@ const NEW_ITEMS = [
   { href: '/customers/new', label: 'Pelanggan Baru', icon: UserPlus, ready: true },
   { href: '/items/new', label: 'Item Baru', icon: Package, ready: true },
   { href: '/new/upload', label: 'Upload File', icon: Paperclip, ready: true },
+  { href: '/new/archive-order', label: 'Order Arsip', icon: Archive, ready: true },
 ];
 
 export default function NewHubPage() {

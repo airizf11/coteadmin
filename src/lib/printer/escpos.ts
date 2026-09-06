@@ -86,6 +86,11 @@ export class EscPos {
     return this.concat(this.init(), this.text("HELLO"), this.lf(2));
   }
 
+  static openDrawer(): Uint8Array {
+    // ESC p m t1 t2 — command standar buka laci kasir (pin 2), dipake hampir semua printer
+    return this.raw(0x1b, 0x70, 0x00, 0x19, 0xfa);
+  }
+
   static testReceipt(): Uint8Array {
     return this.concat(
       this.init(),
@@ -271,14 +276,13 @@ export class EscPos {
       parts.push(this.text(line("Kasir", data.order.handledByName)), this.lf());
     }
 
-    // temp off
-    /* if (data.order.trackUrl) {
+    if (data.order.trackUrl) {
       parts.push(this.text(divider), this.lf());
       parts.push(this.alignCenter());
       parts.push(this.qrCode(data.order.trackUrl));
       parts.push(this.lf());
       parts.push(this.alignLeft());
-    } */
+    }
 
     parts.push(this.text(divider), this.lf());
 

@@ -1,0 +1,269 @@
+# CoTEAdmin tree
+'\web\coteadmin> tree src /f
+Folder PATH listing for volume OS
+Volume serial number is EA64-DF65
+C:\...\WEB\COTEADMIN\SRC
+│   proxy.ts
+│   
+├───app
+│   │   globals.css
+│   │   layout.tsx
+│   │   manifest.ts
+│   │   page.tsx
+│   │   providers.tsx
+│   │   
+│   ├───(app)
+│   │   │   error.tsx
+│   │   │   layout.tsx
+│   │   │   NoAccessScreen.tsx
+│   │   │   
+│   │   ├───about
+│   │   │       page.tsx
+│   │   │       
+│   │   ├───attachments
+│   │   │       DeleteButton.tsx
+│   │   │       page.tsx
+│   │   │       
+│   │   ├───audit-logs
+│   │   │       page.tsx
+│   │   │       
+│   │   ├───customers
+│   │   │   │   actions.ts
+│   │   │   │   CustomerFormFields.tsx
+│   │   │   │   page.tsx
+│   │   │   │   
+│   │   │   ├───new
+│   │   │   │       page.tsx
+│   │   │   │       
+│   │   │   └───[id]
+│   │   │       │   DeleteButton.tsx
+│   │   │       │   page.tsx
+│   │   │       │   
+│   │   │       └───edit
+│   │   │               actions.ts
+│   │   │               EditForm.tsx
+│   │   │               page.tsx
+│   │   │               
+│   │   ├───dashboard
+│   │   │       DashboardSkeleton.tsx
+│   │   │       page.tsx
+│   │   │       
+│   │   ├───help
+│   │   │       page.tsx
+│   │   │       
+│   │   ├───items
+│   │   │   │   actions.ts
+│   │   │   │   ItemFormFields.tsx
+│   │   │   │   page.tsx
+│   │   │   │   
+│   │   │   ├───new
+│   │   │   │       page.tsx
+│   │   │   │       
+│   │   │   └───[id]
+│   │   │           actions.ts
+│   │   │           ItemDetail.tsx
+│   │   │           page.tsx
+│   │   │           
+│   │   ├───more
+│   │   │       page.tsx
+│   │   │       
+│   │   ├───new
+│   │   │   │   page.tsx
+│   │   │   │   
+│   │   │   ├───archive-order
+│   │   │   │       ArchiveOrderForm.tsx
+│   │   │   │       page.tsx
+│   │   │   │       
+│   │   │   ├───orders
+│   │   │   │       customer-actions.ts
+│   │   │   │       CustomerPicker.tsx
+│   │   │   │       OrderForm.tsx
+│   │   │   │       page.tsx
+│   │   │   │       promo-actions.ts
+│   │   │   │       
+│   │   │   ├───tx
+│   │   │   │       NewTxForm.tsx
+│   │   │   │       page.tsx
+│   │   │   │       
+│   │   │   └───upload
+│   │   │           page.tsx
+│   │   │           
+│   │   ├───orders
+│   │   │   │   actions.ts
+│   │   │   │   OrderFilterBar.tsx
+│   │   │   │   page.tsx
+│   │   │   │   
+│   │   │   └───[id]
+│   │   │       │   actions.ts
+│   │   │       │   OrderActionButtons.tsx
+│   │   │       │   page.tsx
+│   │   │       │   
+│   │   │       └───receipt
+│   │   │               BlePrintButton.tsx
+│   │   │               OpenDrawerButton.tsx
+│   │   │               page.tsx
+│   │   │               ReceiptWaButton.tsx
+│   │   │               
+│   │   ├───profile
+│   │   │       actions.ts
+│   │   │       page.tsx
+│   │   │       
+│   │   ├───promos
+│   │   │   │   page.tsx
+│   │   │   │   
+│   │   │   ├───new
+│   │   │   │       actions.ts
+│   │   │   │       page.tsx
+│   │   │   │       
+│   │   │   └───[id]
+│   │   │           actions.ts
+│   │   │           page.tsx
+│   │   │           PromoDetail.tsx
+│   │   │           
+│   │   ├───raw-materials
+│   │   │   │   actions.tsx
+│   │   │   │   page.tsx
+│   │   │   │   
+│   │   │   └───new
+│   │   │           page.tsx
+│   │   │           
+│   │   ├───reports
+│   │   │   │   page.tsx
+│   │   │   │   
+│   │   │   └───advanced
+│   │   │           AdvancedReportFilterBar.tsx
+│   │   │           ExportButton.tsx
+│   │   │           page.tsx
+│   │   │           ReportTabs.tsx
+│   │   │           
+│   │   ├───settings
+│   │   │       actions.ts
+│   │   │       page.tsx
+│   │   │       SettingsForm.tsx
+│   │   │       
+│   │   ├───teams
+│   │   │       actions.ts
+│   │   │       AddTeamMember.tsx
+│   │   │       InviteForm.tsx
+│   │   │       page.tsx
+│   │   │       RemoveButton.tsx
+│   │   │       
+│   │   └───transactions
+│   │       │   actions.ts
+│   │       │   MarkPaidInline.tsx
+│   │       │   page.tsx
+│   │       │   TransactionFilterBar.tsx
+│   │       │   TransactionList.tsx
+│   │       │   
+│   │       └───[id]
+│   │               page.tsx
+│   │               
+│   ├───api
+│   │   ├───attachments
+│   │   │   │   route.ts
+│   │   │   │   
+│   │   │   └───[id]
+│   │   │       │   route.ts
+│   │   │       │   
+│   │   │       ├───download
+│   │   │       │       route.ts
+│   │   │       │       
+│   │   │       └───view
+│   │   │               route.ts
+│   │   │               
+│   │   ├───health
+│   │   │       route.ts
+│   │   │       
+│   │   └───reports
+│   │       └───export
+│   │               route.ts
+│   │               
+│   ├───devtest
+│   │   ├───apikeys
+│   │   │       actions.ts
+│   │   │       CreateAppForm.tsx
+│   │   │       page.tsx
+│   │   │       
+│   │   ├───items
+│   │   │       page.tsx
+│   │   │       
+│   │   └───transactions
+│   │           page.tsx
+│   │           
+│   ├───login
+│   │       actions.ts
+│   │       LoginForm.tsx
+│   │       page.tsx
+│   │       
+│   ├───printlab
+│   │       page.tsx
+│   │       
+│   └───track
+│       │   page.tsx
+│       │   
+│       └───[trackingToken]
+│               page.tsx
+│               
+├───components
+│   │   ApiErrorFallback.tsx
+│   │   ConnectionIndicator.tsx
+│   │   DatePresetFilter.tsx
+│   │   ItemCartPicker.tsx
+│   │   Money.tsx
+│   │   PageHeader.tsx
+│   │   PrivacyToggle.tsx
+│   │   SystemHealthCard.tsx
+│   │   ThemeToggle.tsx
+│   │   
+│   ├───charts
+│   │       PaymentMethodDonut.tsx
+│   │       TrendLineChart.tsx
+│   │       
+│   ├───printlab
+│   │       PrintLab.tsx
+│   │       
+│   └───ui
+│           badge.tsx
+│           button.tsx
+│           card.tsx
+│           dialog.tsx
+│           dropdown-menu.tsx
+│           input.tsx
+│           label.tsx
+│           select.tsx
+│           sheet.tsx
+│           sonner.tsx
+│           switch.tsx
+│           table.tsx
+│           textarea.tsx
+│           
+├───lib
+│   │   auth-refresh.ts
+│   │   branding.ts
+│   │   cotebek.ts
+│   │   date-range.ts
+│   │   format.ts
+│   │   icons.ts
+│   │   session.ts
+│   │   utils.ts
+│   │   whatsapp.ts
+│   │   
+│   ├───constants
+│   │       order-status.tsx
+│   │       payment.ts
+│   │       transaction.ts
+│   │       
+│   ├───hooks
+│   │       useSystemHealth.ts
+│   │       
+│   ├───printer
+│   │       ble.ts
+│   │       escpos.ts
+│   │       
+│   └───wa-templates
+│           index.ts
+│           order-update.ts
+│           receipt.ts
+│           
+└───types
+        web-bluetooth.d.ts';

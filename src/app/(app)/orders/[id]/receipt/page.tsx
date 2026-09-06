@@ -6,6 +6,7 @@ import { ReceiptWaButton } from './ReceiptWaButton';
 import { formatRupiah } from '@/lib/format';
 import { headers } from 'next/headers';
 import QRCode from 'qrcode';
+import { OpenDrawerButton } from './OpenDrawerButton';
 
 export type ReceiptData = {
   business: { name: string; address: string | null; phone: string | null; footer: string };
@@ -18,8 +19,12 @@ export type ReceiptData = {
 
 export default async function ReceiptPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  const res = await cotebek<{ data: ReceiptData }>(`/orders/${id}/receipt`);
+  const [res, settingsRes] = await Promise.all([
+    cotebek<{ data: ReceiptData }>(`/orders/${id}/receipt`),
+    cotebek<{ data: { print_qr_enabled?: boolean } }>('/app-settings'),
+  ]);
   const r = res.data;
+  const printQrEnabled = settingsRes.data.print_qr_enabled !== false;
 
   const h = await headers();
   const appUrl = `${h.get('x-forwarded-proto') ?? 'https'}://${h.get('host')}`;
@@ -30,7 +35,9 @@ export default async function ReceiptPage({ params }: { params: Promise<{ id: st
 
   return (
     <div className="p-4">
-      <BlePrintButton data={r} />
+      <BlePrintButton data={r} printQrEnabled={printQrEnabled} />
+
+      <OpenDrawerButton />
 
       <ReceiptWaButton data={r} customerPhone={r.customer.phone} />
 

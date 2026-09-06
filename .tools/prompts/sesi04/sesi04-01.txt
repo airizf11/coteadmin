@@ -1,4 +1,265 @@
-// coteadmin/src/app/(app)/settings/SettingsForm.tsx
+# sesi04-01 CoTEAdmin
+
+- '/* coteadmin/src/app/globals.css */
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-sans);
+  --font-mono: var(--font-geist-mono);
+  --font-heading: var(--font-sans);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-success: var(--success);
+  --color-success-foreground: var(--success-foreground);
+  --color-warning: var(--warning);
+  --color-warning-foreground: var(--warning-foreground);
+  --color-info: var(--info);
+  --color-info-foreground: var(--info-foreground);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
+}
+
+:root {
+  --background: #dfedfc;
+  --foreground: #0f172a;
+
+  --card: #d1dfff;
+  --card-foreground: #0f172a;
+
+  --popover: #ffffff;
+  --popover-foreground: #0f172a;
+
+  --surface-raised: #ffffff;
+  --surface-subtle: #f1f5f9;
+  --surface-muted: #e9eef4;
+
+  --primary: #d88900;
+  --primary-foreground: #ffffff;
+  --primary-hover: #b97200;
+  --primary-active: #9d6200;
+  --primary-subtle: #fff4d6;
+
+  --secondary: #e8eef5;
+  --secondary-foreground: #18324d;
+  --secondary-hover: #dce5ee;
+  --secondary-active: #cfdbe7;
+
+  --muted: #eef2f6;
+  --muted-foreground: #64748b;
+
+  --accent: #fff4d6;
+  --accent-foreground: #7a4b00;
+  --accent-hover: #ffedb5;
+  --accent-active: #ffe39a;
+
+  --border: #d7e0e9;
+  --border-strong: #c3cfdb;
+  --input: #d7e0e9;
+  --input-hover: #b8c6d4;
+
+  --ring: #d88900;
+  --ring-offset: #ffffff;
+
+  --foreground-subtle: #334155;
+  --foreground-muted: #64748b;
+  --foreground-disabled: #94a3b8;
+
+  --hover-overlay: rgba(15, 23, 42, 0.04);
+  --active-overlay: rgba(15, 23, 42, 0.08);
+  --disabled-bg: #f1f5f9;
+  --disabled-foreground: #94a3b8;
+
+  --destructive: #dc2626;
+  --destructive-foreground: #ffffff;
+  --destructive-hover: #b91c1c;
+  --destructive-active: #991b1b;
+  --destructive-subtle: #fef2f2;
+
+  --success: #059669;
+  --success-foreground: #ffffff;
+  --success-subtle: #ecfdf5;
+
+  --warning: #d97706;
+  --warning-foreground: #ffffff;
+  --warning-subtle: #fffbeb;
+
+  --info: #2563eb;
+  --info-foreground: #ffffff;
+  --info-subtle: #eff6ff;
+
+  --chart-1: #059669;
+  --chart-2: #2563eb;
+  --chart-3: #7c3aed;
+  --chart-4: #ea580c;
+  --chart-5: #db2777;
+
+  --sidebar: #f1f5f9;
+  --sidebar-foreground: #0f172a;
+
+  --sidebar-primary: #d88900;
+  --sidebar-primary-foreground: #ffffff;
+
+  --sidebar-accent: #e2e8f0;
+  --sidebar-accent-foreground: #18324d;
+
+  --sidebar-border: #d7e0e9;
+  --sidebar-ring: #d88900;
+
+  --sidebar-hover: #e8eef5;
+  --sidebar-active: #dce5ee;
+  --sidebar-selected: #fff4d6;
+  --sidebar-selected-foreground: #7a4b00;
+}
+
+.dark {
+  --background: #07111f;
+  --foreground: #f1f5f9;
+
+  --card: #10233d;
+  --card-foreground: #f1f5f9;
+
+  --popover: #10233d;
+  --popover-foreground: #f1f5f9;
+
+  --surface-raised: #132a47;
+  --surface-subtle: #0d2037;
+  --surface-muted: #142f4d;
+
+  --primary: #f0a500;
+  --primary-foreground: #0a192f;
+  --primary-hover: #ffb82e;
+  --primary-active: #d99100;
+  --primary-subtle: #3a2b0c;
+
+  --secondary: #193b60;
+  --secondary-foreground: #f8fafc;
+  --secondary-hover: #214a73;
+  --secondary-active: #163451;
+
+  --muted: #142f4d;
+  --muted-foreground: #9aaabd;
+
+  --accent: #263d55;
+  --accent-foreground: #f8fafc;
+  --accent-hover: #304b66;
+  --accent-active: #1f344a;
+
+  --border: #294967;
+  --border-strong: #3b5c79;
+  --input: #294967;
+  --input-hover: #3b5c79;
+
+  --ring: #f0a500;
+  --ring-offset: #0a192f;
+
+  --foreground-subtle: #cbd5e1;
+  --foreground-muted: #9aaabd;
+  --foreground-disabled: #64748b;
+
+  --hover-overlay: rgba(248, 250, 252, 0.05);
+  --active-overlay: rgba(248, 250, 252, 0.09);
+  --disabled-bg: #10233d;
+  --disabled-foreground: #64748b;
+
+  --destructive: #ef4444;
+  --destructive-foreground: #ffffff;
+  --destructive-hover: #f87171;
+  --destructive-active: #dc2626;
+  --destructive-subtle: #3b1518;
+
+  --success: #10b981;
+  --success-foreground: #ffffff;
+  --success-subtle: #0b3028;
+
+  --warning: #f59e0b;
+  --warning-foreground: #172033;
+  --warning-subtle: #3a2b0c;
+
+  --info: #3b82f6;
+  --info-foreground: #ffffff;
+  --info-subtle: #102a4d;
+
+  --chart-1: #34d399;
+  --chart-2: #60a5fa;
+  --chart-3: #a78bfa;
+  --chart-4: #fb923c;
+  --chart-5: #fb7185;
+
+  --sidebar: #081525;
+  --sidebar-foreground: #f1f5f9;
+
+  --sidebar-primary: #f0a500;
+  --sidebar-primary-foreground: #081525;
+
+  --sidebar-accent: #193b60;
+  --sidebar-accent-foreground: #f8fafc;
+
+  --sidebar-border: #294967;
+  --sidebar-ring: #f0a500;
+
+  --sidebar-hover: #10233d;
+  --sidebar-active: #142f4d;
+  --sidebar-selected: #3a2b0c;
+  --sidebar-selected-foreground: #ffd166;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+  html {
+    @apply font-sans;
+  }
+}
+
+.privacy-mode .money-value {
+  filter: blur(7px);
+  user-select: none;
+  transition: filter 0.15s ease;
+}';
+
+- '// coteadmin/src/app/(app)/settings/SettingsForm.tsx
 'use client';
 
 import { useState } from 'react';
@@ -131,7 +392,8 @@ export function SettingsForm({ settings }: { settings: Settings }) {
        </div>
 
 {/* TAB 1: TOKO & STRUK */}
-       <div className={cn('space-y-6', activeTab !== 'store' && 'hidden')}>
+       {activeTab === 'store' && (
+         <div className="space-y-6">
       <Card className="shadow-sm border-border">
         <CardHeader className="pb-4 border-b border-border/50">
           <CardTitle className="text-base font-bold flex items-center gap-2">
@@ -191,7 +453,7 @@ export function SettingsForm({ settings }: { settings: Settings }) {
           type="url"
           value={websiteUrl}
           onChange={(e) => setWebsiteUrl(e.target.value)}
-          placeholder="https://usahamu.com"
+          placeholder="https://usahamu.cotesystem.my.id"
         />
         <p className="text-xs text-muted-foreground">Kalau diisi, muncul tombol "Kunjungi Halaman Utama" di halaman awal.</p>
       </div>
@@ -213,9 +475,11 @@ export function SettingsForm({ settings }: { settings: Settings }) {
         </CardContent>
       </Card>
       </div>
+       )}
 
 {/* TAB 2: ALUR & SISTEM */}
-       <div className={cn('space-y-6', activeTab !== 'system' && 'hidden')}>
+       {activeTab === 'system' && (
+         <div className="space-y-6">
       <Card className="shadow-sm border-border">
   <CardHeader className="pb-4 border-b border-border/50">
     <CardTitle className="text-base font-bold flex items-center gap-2">
@@ -345,9 +609,11 @@ export function SettingsForm({ settings }: { settings: Settings }) {
         </CardContent>
       </Card>
       </div>
+       )}
 
        {/* TAB 3: TAMPILAN */}
-       <div className={cn('space-y-6', activeTab !== 'appearance' && 'hidden')}>
+       {activeTab === 'appearance' && (
+         <div className="space-y-6">
 
 <div className="space-y-2">
       <Label className="text-sm font-semibold">Warna Utama</Label>
@@ -362,25 +628,18 @@ export function SettingsForm({ settings }: { settings: Settings }) {
         <span className="text-sm text-muted-foreground font-mono">{primaryColor}</span>
       </div>
       {/* Preset Warna Pilihan */}
-      <div className="flex flex-wrap items-center gap-2 pt-1">
-        {['#f0a500', '#d88900', '#059669', '#2563eb', '#6366f1', '#7c3aed', '#db2777', '#0f172a'].map((color) => (
-          <button
-            key={color}
-            type="button"
-            onClick={() => setPrimaryColor(color)}
-            aria-label={`Pilih warna ${color}`}
-            className={cn(
-              'h-7 w-7 rounded-full border border-border/50 cursor-pointer transition-transform hover:scale-110',
-              primaryColor.toLowerCase() === color && 'ring-2 ring-offset-2 ring-foreground scale-110',
-            )}
-            style={{ backgroundColor: color }}
-          />
-        ))}
-      </div>
-      <p className="text-xs text-muted-foreground">
-        Warna ini dipakai di seluruh aplikasi dan juga laporan PDF/Excel yang diunduh.
-      </p>
-      </div>
+     <div className="flex items-center gap-2 pt-1">
+       {['#f0a500', '#10b981', '#3b82f6', '#6366f1', '#ec4899'].map((color) => (
+         <button
+           key={color}
+           type="button"
+           onClick={() => setPrimaryColor(color)}
+           className="h-6 w-6 rounded-full border border-border/50 cursor-pointer transition-transform hover:scale-110"
+           style={{ backgroundColor: color }}
+         />
+       ))}
+     </div>
+    </div>
 
     <Card className="shadow-sm border-border">
        <CardHeader className="pb-4 border-b border-border/50">
@@ -410,6 +669,7 @@ export function SettingsForm({ settings }: { settings: Settings }) {
      </Card>
 
           </div>
+       )}
 
       <div className="sticky bottom-20 -mx-4 mt-6 space-y-2 border-t border-border bg-background/95 backdrop-blur px-4 pt-3 pb-2 shadow-[0_-4px_12px_rgba(0,0,0,0.06)]">
        {error && (
@@ -442,4 +702,64 @@ export function SettingsForm({ settings }: { settings: Settings }) {
 
     </form>
   );
+}';
+
+- '// src/components/ui/button.tsx - default shadcn init - baseui
+import { Button as ButtonPrimitive } from "@base-ui/react/button"
+import { cva, type VariantProps } from "class-variance-authority"
+
+import { cn } from "@/lib/utils"
+
+const buttonVariants = cva(
+  "group/button inline-flex shrink-0 items-center justify-center rounded-md border border-transparent bg-clip-padding text-sm font-medium whitespace-nowrap transition-all outline-none select-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 active:not-aria-[haspopup]:translate-y-px disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/20 dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
+  {
+    variants: {
+      variant: {
+        default: "bg-primary text-primary-foreground hover:bg-primary/80",
+        outline:
+          "border-border bg-background shadow-xs hover:bg-muted hover:text-foreground aria-expanded:bg-muted aria-expanded:text-foreground dark:border-input dark:bg-input/30 dark:hover:bg-input/50",
+        secondary:
+          "bg-secondary text-secondary-foreground hover:bg-[color-mix(in_oklch,var(--secondary),var(--foreground)_5%)] aria-expanded:bg-secondary aria-expanded:text-secondary-foreground",
+        ghost:
+          "hover:bg-muted hover:text-foreground aria-expanded:bg-muted aria-expanded:text-foreground dark:hover:bg-muted/50",
+        destructive:
+          "bg-destructive/10 text-destructive hover:bg-destructive/20 focus-visible:border-destructive/40 focus-visible:ring-destructive/20 dark:bg-destructive/20 dark:hover:bg-destructive/30 dark:focus-visible:ring-destructive/40",
+        link: "text-primary underline-offset-4 hover:underline",
+      },
+      size: {
+        default:
+          "h-9 gap-1.5 px-2.5 in-data-[slot=button-group]:rounded-md has-data-[icon=inline-end]:pr-2 has-data-[icon=inline-start]:pl-2",
+        xs: "h-6 gap-1 rounded-[min(var(--radius-md),8px)] px-2 text-xs in-data-[slot=button-group]:rounded-md has-data-[icon=inline-end]:pr-1.5 has-data-[icon=inline-start]:pl-1.5 [&_svg:not([class*='size-'])]:size-3",
+        sm: "h-8 gap-1 rounded-[min(var(--radius-md),10px)] px-2.5 in-data-[slot=button-group]:rounded-md has-data-[icon=inline-end]:pr-1.5 has-data-[icon=inline-start]:pl-1.5",
+        lg: "h-10 gap-1.5 px-2.5 has-data-[icon=inline-end]:pr-2 has-data-[icon=inline-start]:pl-2",
+        icon: "size-9",
+        "icon-xs":
+          "size-6 rounded-[min(var(--radius-md),8px)] in-data-[slot=button-group]:rounded-md [&_svg:not([class*='size-'])]:size-3",
+        "icon-sm":
+          "size-8 rounded-[min(var(--radius-md),10px)] in-data-[slot=button-group]:rounded-md",
+        "icon-lg": "size-10",
+      },
+    },
+    defaultVariants: {
+      variant: "default",
+      size: "default",
+    },
+  }
+)
+
+function Button({
+  className,
+  variant = "default",
+  size = "default",
+  ...props
+}: ButtonPrimitive.Props & VariantProps<typeof buttonVariants>) {
+  return (
+    <ButtonPrimitive
+      data-slot="button"
+      className={cn(buttonVariants({ variant, size, className }))}
+      {...props}
+    />
+  )
 }
+
+export { Button, buttonVariants }';

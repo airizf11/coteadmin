@@ -6,7 +6,7 @@ import { BlePrinter } from '@/lib/printer/ble';
 import { EscPos } from '@/lib/printer/escpos';
 import type { ReceiptData } from './page';
 
-export function BlePrintButton({ data }: { data: ReceiptData }) {
+export function BlePrintButton({ data, printQrEnabled }: { data: ReceiptData; printQrEnabled: boolean }) {
   const [printer] = useState(() => new BlePrinter());
   const [status, setStatus] = useState<'idle' | 'connecting' | 'connected' | 'printing' | 'error'>('idle');
   const [errorMsg, setErrorMsg] = useState('');
@@ -20,16 +20,15 @@ export function BlePrintButton({ data }: { data: ReceiptData }) {
       }
       setStatus('printing');
 
-      await printer.write(EscPos.receipt(data), { chunkSize: 200, delay: 20 });
+      // await printer.write(EscPos.receipt(data), { chunkSize: 200, delay: 20 });
 
-      // temp off
-      /* const trackUrl = data.order.trackingToken
+      const trackUrl = data.order.trackingToken
         ? `${window.location.origin}/track/${data.order.trackingToken}`
         : null;
       await printer.write(
-        EscPos.receipt({ ...data, order: { ...data.order, trackUrl } }),
+        EscPos.receipt({ ...data, order: { ...data.order, trackUrl: printQrEnabled ? trackUrl : null } }),
         { chunkSize: 200, delay: 20 },
-      ); */
+      );
 
       setStatus('connected');
     } catch (err) {

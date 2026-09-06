@@ -6,7 +6,7 @@ import { redirect } from "next/navigation";
 import { cotebek } from "@/lib/cotebek";
 
 type CartItem = {
-  itemId: string;
+  itemId?: string;
   itemName: string;
   qty: number;
   price: number;
