@@ -6,7 +6,7 @@ export function last30DaysRangeWIB() {
   const end = nowWIB.toISOString().slice(0, 10);
 
   const start = new Date(nowWIB);
-  start.setDate(start.getDate() - 29);
+  start.setUTCDate(start.getUTCDate() - 29);
 
   return { start: start.toISOString().slice(0, 10), end };
 }
@@ -36,16 +36,16 @@ export function getDatePresetRange(preset: DatePreset) {
     case "today":
       break;
     case "this_week": {
-      const day = start.getDay(); // 0=Minggu..6=Sabtu
+      const day = start.getUTCDay(); // 0=Minggu..6=Sabtu
       const diffToMonday = day === 0 ? 6 : day - 1;
-      start.setDate(start.getDate() - diffToMonday);
+      start.setUTCDate(start.getUTCDate() - diffToMonday);
       break;
     }
     case "this_month":
-      start.setDate(1);
+      start.setUTCDate(1);
       break;
     case "last_30_days":
-      start.setDate(start.getDate() - 29);
+      start.setUTCDate(start.getUTCDate() - 29);
       break;
   }
 

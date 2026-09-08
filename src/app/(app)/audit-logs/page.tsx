@@ -11,14 +11,18 @@ import {
   Database, 
   Fingerprint, 
   ChevronDown,
-  Activity
+  Activity,
+  ArrowUpRight,
+  KeyRound
 } from 'lucide-react';
+import Link from 'next/link';
 
 type AuditLog = {
   id: string;
-  actorType: 'HUMAN' | 'SYSTEM';
+  actorType: 'HUMAN' | 'SYSTEM' | 'SERVICE';
   userName: string | null;
   userEmail: string | null;
+  apiKeyLabel: string | null;
   action: string;
   entity: string;
   entityId: string | null;
@@ -26,6 +30,37 @@ type AuditLog = {
   after: Record<string, unknown> | null;
   ipAddress: string | null;
   createdAt: string;
+};
+
+// Cuma entity yang emang punya halaman detail di coteadmin yang boleh masuk sini.
+// Nambah entity lain? Pastiin dulu route-nya beneran ada, jangan asal tebak.
+const ENTITY_LINK: Partial<Record<string, (id: string) => string>> = {
+  orders: (id) => `/orders/${id}`,
+};
+
+const ACTOR_CONFIG: Record<
+  AuditLog['actorType'],
+  {
+    label: string;
+    icon: typeof User;
+    className: string;
+  }
+> = {
+  HUMAN: {
+    label: 'MANUSIA',
+    icon: User,
+    className: 'bg-info/10 text-info',
+  },
+  SERVICE: {
+    label: 'API KEY',
+    icon: KeyRound,
+    className: 'bg-warning/10 text-warning',
+  },
+  SYSTEM: {
+    label: 'SISTEM',
+    icon: Cpu,
+    className: 'bg-muted text-muted-foreground',
+  },
 };
 
 export default async function AuditLogsPage() {
@@ -57,7 +92,7 @@ export default async function AuditLogsPage() {
       {/* 3. LIST LOGS */}
       <ul className="space-y-3" aria-label="Riwayat Aktivitas Sistem">
         {logs.map((log) => {
-          const isHuman = log.actorType === 'HUMAN';
+          const actor = ACTOR_CONFIG[log.actorType] ?? ACTOR_CONFIG.SYSTEM;
           
           return (
             <li key={log.id}>
@@ -73,11 +108,11 @@ export default async function AuditLogsPage() {
                       variant="outline" 
                       className={cn(
                         "text-[10px] font-bold px-1.5 py-0.5 shrink-0 flex items-center gap-1 shadow-none border-0",
-                        isHuman ? "bg-info/10 text-info" : "bg-muted text-muted-foreground"
+                        actor.className
                       )}
                     >
-                      {isHuman ? <User size={12} /> : <Cpu size={12} />}
-                      {isHuman ? 'MANUSIA' : 'SISTEM'}
+                      <actor.icon size={12} />
+                      {actor.label}
                     </Badge>
                   </div>
 
@@ -88,9 +123,22 @@ export default async function AuditLogsPage() {
                       {log.entity}
                     </span>
                     {log.entityId && (
-                      <span className="text-muted-foreground font-mono">
-                        #{log.entityId.slice(0, 8)}...
-                      </span>
+                      (() => {
+                        const buildHref = ENTITY_LINK[log.entity];
+                        return buildHref ? (
+                          <Link
+                            href={buildHref(log.entityId)}
+                            className="inline-flex items-center gap-0.5 font-mono text-primary hover:underline"
+                          >
+                            #{log.entityId.slice(0, 8)}...
+                            <ArrowUpRight size={11} className="shrink-0" />
+                          </Link>
+                        ) : (
+                          <span className="text-muted-foreground font-mono">
+                            #{log.entityId.slice(0, 8)}...
+                          </span>
+                        );
+                      })()
                     )}
                   </div>
 
@@ -99,7 +147,11 @@ export default async function AuditLogsPage() {
                     <div className="flex items-center gap-1.5">
                       <User size={12} className="shrink-0" /> 
                       <span className="font-medium truncate">
-                        {isHuman ? (log.userName ?? log.userEmail ?? 'Pengguna tidak diketahui') : 'Panggilan Sistem (API Key)'}
+                        {log.actorType === 'HUMAN'
+                          ? (log.userName ?? log.userEmail ?? 'Pengguna tidak diketahui')
+                          : log.actorType === 'SERVICE'
+                            ? `Panggilan API Key${log.apiKeyLabel ? ` (${log.apiKeyLabel})` : ''}`
+                            : 'Panggilan Sistem (internal)'}
                       </span>
                     </div>
                     <div className="flex items-center justify-between">

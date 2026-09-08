@@ -11,10 +11,11 @@ import { Card, CardContent } from '@/components/ui/card';
 import { TrendingDown, TrendingUp, Wallet, Tags, AlignLeft, Loader2, Save, CalendarClock, Receipt, CheckCircle2, CalendarDays, X, Users } from 'lucide-react';
 
 const CATEGORIES = [
-  { value: 'EXPENSE', label: 'Pengeluaran (Gaji, Opex, dll)' },
+  { value: 'EXPENSE', label: 'Pengeluaran (Gaji, Operasional, dll)' },
   { value: 'FUND_IN', label: 'Modal Masuk' },
   { value: 'FUND_OUT', label: 'Modal Keluar' },
-  { value: 'OTHER', label: 'Lainnya' },
+  { value: 'OTHER', label: 'Kategori Lain' },
+  { value: 'CAPEX', label: 'Aset / Modal (alat, mesin, dll)' },
 ];
 
 const DRAFT_KEY = 'draft:new-tx';

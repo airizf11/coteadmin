@@ -21,6 +21,19 @@ type CartLine = { itemId: string; itemName: string; qty: number; price: number; 
 type PromoOption = { id: string; name: string; code: string; type: 'PERCENTAGE' | 'NOMINAL'; value: number };
 type TeamMember = { id: string; name: string };
 
+const DUE_DATE_PRESETS = [
+  { label: 'Hari Ini', days: 0 },
+  { label: 'Besok', days: 1 },
+  { label: '2 Hari', days: 2 },
+  { label: '3 Hari', days: 3 },
+];
+
+function addDaysISO(days: number) {
+  const d = new Date();
+  d.setDate(d.getDate() + days);
+  return d.toISOString().slice(0, 10);
+}
+
 const DRAFT_KEY = 'draft:new-order';
 
 export function OrderForm({ items, promos, teamMembers }: { items: Item[]; promos: PromoOption[]; teamMembers: TeamMember[] }) {
@@ -30,6 +43,7 @@ export function OrderForm({ items, promos, teamMembers }: { items: Item[]; promo
   const [paymentStatus, setPaymentStatus] = useState<'PAID' | 'UNPAID'>('UNPAID');
   const [teamMemberId, setTeamMemberId] = useState('');
   const [dueDate, setDueDate] = useState('');
+  const [dueDatePreset, setDueDatePreset] = useState<number | 'custom' | null>(null);
   const [note, setNote] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [pending, setPending] = useState(false);
@@ -193,7 +207,7 @@ export function OrderForm({ items, promos, teamMembers }: { items: Item[]; promo
           </div>
         )}
 
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div className="space-y-1.5">
             <Label>Metode Bayar</Label>
             <div className="relative">
@@ -205,7 +219,41 @@ export function OrderForm({ items, promos, teamMembers }: { items: Item[]; promo
           </div>
           <div className="space-y-1.5">
             <Label>Estimasi Selesai</Label>
-            <Input type="date" value={dueDate} onChange={(e) => setDueDate(e.target.value)} className="h-10 text-sm" />
+            <div className="grid grid-cols-3 sm:grid-cols-5 gap-1.5">
+              {DUE_DATE_PRESETS.map((p) => (
+                <Button
+                  key={p.days}
+                  type="button"
+                  size="sm"
+                  variant={dueDatePreset === p.days ? 'default' : 'outline'}
+                  onClick={() => {
+                    setDueDatePreset(p.days);
+                    setDueDate(addDaysISO(p.days));
+                  }}
+                  className="h-9 px-1 text-xs font-medium"
+                >
+                  {p.label}
+                </Button>
+              ))}
+              <Button
+                type="button"
+                size="sm"
+                variant={dueDatePreset === 'custom' ? 'default' : 'outline'}
+                onClick={() => setDueDatePreset('custom')}
+                className="h-9 px-1 text-xs font-medium"
+              >
+                Lainnya
+              </Button>
+            </div>
+            {dueDatePreset === 'custom' && (
+              <Input
+                type="date"
+                value={dueDate}
+                onChange={(e) => setDueDate(e.target.value)}
+                className="h-10 text-sm mt-1.5"
+                autoFocus
+              />
+            )}
           </div>
         </div>
 
