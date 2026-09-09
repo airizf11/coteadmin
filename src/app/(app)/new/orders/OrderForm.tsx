@@ -288,9 +288,9 @@ export function OrderForm({ items, promos, teamMembers }: { items: Item[]; promo
         </div>
       </div>
 
-      <div className="sticky bottom-20 -mx-4 mt-6 space-y-2 border-t border-border bg-background/95 backdrop-blur px-4 pt-3 pb-2 shadow-[0_-4px_12px_rgba(0,0,0,0.06)]">
+      <div className="sticky bottom-20 -mx-4 mt-4 space-y-1.5 border-t border-border bg-background/95 backdrop-blur px-3 sm:px-4 pt-2 pb-1.5 shadow-[0_-4px_12px_rgba(0,0,0,0.06)]">
        <Card className="border-dashed shadow-sm bg-muted/10">
-         <CardContent className="p-4 space-y-2">
+         <CardContent className="p-2.5 sm:p-4 space-y-1 sm:space-y-2">
            <div className="flex justify-between text-sm">
              <span className="text-muted-foreground">Subtotal</span>
              <span className="font-medium">{formatRupiah(totalAmount)}</span>
@@ -301,16 +301,16 @@ export function OrderForm({ items, promos, teamMembers }: { items: Item[]; promo
                <span className="font-medium">-{formatRupiah(appliedPromo.discountAmount)}</span>
              </div>
            )}
-           <div className="flex justify-between items-center pt-2 mt-2 border-t border-border">
+           <div className="flex justify-between items-center pt-1.5 mt-1.5 sm:pt-2 sm:mt-2 border-t border-border">
              <span className="font-semibold">Total Tagihan</span>
-             <span className="text-2xl font-bold text-primary">{formatRupiah(finalAmount)}</span>
+             <span className="text-xl sm:text-2xl font-bold text-primary">{formatRupiah(finalAmount)}</span>
            </div>
          </CardContent>
        </Card>
 
        {error && <div className="p-3 bg-destructive/10 border border-destructive/20 rounded-md text-sm text-destructive font-medium text-center">{error}</div>}
 
-       <Button size="lg" onClick={handleSubmit} disabled={pending || cartLines.length === 0} className="w-full text-base font-bold shadow-md h-12">
+       <Button size="lg" onClick={handleSubmit} disabled={pending || cartLines.length === 0} className="w-full text-sm sm:text-base font-bold shadow-md h-10 sm:h-12">
          {pending ? <Loader2 size={20} className="animate-spin mr-2" /> : <ShoppingCart size={20} className="mr-2" />}
          {pending ? 'Memproses Order...' : 'Buat Order Sekarang'}
        </Button>

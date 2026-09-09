@@ -1,18 +1,23 @@
 // coteadmin/src/components/charts/TrendLineChart.tsx
 'use client';
 
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
 import { formatCompactRupiah } from '@/lib/format';
 import { formatDate } from '@/lib/date-range';
 
 type Series = { dataKey: string; name: string; color: string };
 
+const formatNumber = (v: number) => new Intl.NumberFormat('id-ID').format(v);
+
 export function TrendLineChart({
   data,
   series,
+  valueFormat = 'currency',
 }: {
   data: Record<string, any>[];
   series: Series[];
+  /** 'currency' (default, format Rupiah) atau 'number' (angka polos, buat data hitungan kayak jumlah order). */
+  valueFormat?: 'currency' | 'number';
 }) {
   if (data.length === 0) {
     return (
@@ -21,6 +26,9 @@ export function TrendLineChart({
       </div>
     );
   }
+
+  const format = valueFormat === 'number' ? formatNumber : formatCompactRupiah;
+  const showLegend = series.length > 1;
 
   return (
     <div className="h-56 w-full">
@@ -36,17 +44,19 @@ export function TrendLineChart({
             interval="preserveStartEnd"
           />
           <YAxis
-            tickFormatter={(v: number) => formatCompactRupiah(v)}
+            tickFormatter={(v: number) => format(v)}
             tick={{ fontSize: 10 }}
             tickLine={false}
             axisLine={false}
             width={48}
+            allowDecimals={valueFormat !== 'number'}
           />
           <Tooltip
-            formatter={(value: any) => formatCompactRupiah(Number(value))}
+            formatter={(value: any) => format(Number(value))}
             labelFormatter={(label: any) => formatDate(String(label))}
             contentStyle={{ fontSize: 12, borderRadius: 8 }}
           />
+          {showLegend && <Legend wrapperStyle={{ fontSize: 11 }} />}
           {series.map((s) => (
             <Line
               key={s.dataKey}

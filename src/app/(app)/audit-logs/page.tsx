@@ -36,7 +36,23 @@ type AuditLog = {
 // Nambah entity lain? Pastiin dulu route-nya beneran ada, jangan asal tebak.
 const ENTITY_LINK: Partial<Record<string, (id: string) => string>> = {
   orders: (id) => `/orders/${id}`,
+  customers: (id) => `/customers/${id}`,
+  transactions: (id) => `/transactions/${id}`,
 };
+
+function getActionBadgeColor(action: string) {
+  const act = action.toUpperCase();
+  if (act.includes('CREATE') || act.includes('ADD') || act.includes('INSERT')) {
+    return 'bg-success/15 text-success border-success/30';
+  }
+  if (act.includes('DELETE') || act.includes('REMOVE') || act.includes('CANCEL')) {
+    return 'bg-destructive/15 text-destructive border-destructive/30';
+  }
+  if (act.includes('UPDATE') || act.includes('EDIT') || act.includes('PATCH')) {
+    return 'bg-warning/15 text-warning border-warning/30';
+  }
+  return 'bg-muted text-muted-foreground border-border';
+}
 
 const ACTOR_CONFIG: Record<
   AuditLog['actorType'],
@@ -101,9 +117,14 @@ export default async function AuditLogsPage() {
                   
                   {/* --- Header: Action & Actor --- */}
                   <div className="flex justify-between items-start mb-3 gap-2">
-                    <div className="font-bold text-sm text-foreground uppercase tracking-tight break-all">
-                      {log.action}
-                    </div>
+                    <div className="flex items-center gap-2 flex-wrap">
+     <span className="font-bold text-sm text-foreground uppercase tracking-tight break-all">
+       {log.action}
+     </span>
+     <span className={cn("text-[9px] font-bold px-1.5 py-0.5 rounded border uppercase", getActionBadgeColor(log.action))}>
+       {log.action.split('_')[0]}
+     </span>
+   </div>
                     <Badge 
                       variant="outline" 
                       className={cn(

@@ -21,7 +21,7 @@ import { Money } from '@/components/Money';
 
 type Summary = { revenue: number; cogs: number; grossProfit: number; totalOrders: number };
 type TopItem = { itemName: string; totalSold: number };
-type TrendPoint = { date: string; revenue: number; profit: number };
+type TrendPoint = { date: string; revenue: number; profit: number; orderCount: number };
 type PaymentMethodStat = { method: string; count: number; percentage: string };
 type PromoBudget = { totalDiscount: number; ordersWithPromo: number; discountPercentage: string };
 type NetProfit = { revenue: number; cogs: number; grossProfit: number; operatingExpense: number; netProfit: number };
@@ -241,6 +241,22 @@ export default async function AdvancedReportsPage({
 
   const penjualanContent = (
     <div className="space-y-4">
+
+      {/* Tren Ord Qty */}
+      <Card className="overflow-hidden border-border shadow-sm">
+        <CardHeader className="border-b border-border/60 px-4 pb-3 pt-4">
+          <SectionHeader icon={Receipt} color="chart-3" title="Jumlah Order Harian" />
+        </CardHeader>
+        <CardContent className="p-4">
+          <TrendLineChart
+            data={trend}
+            series={[{ dataKey: 'orderCount', name: 'Jumlah Order', color: 'var(--chart-3)' }]}
+            valueFormat="number"
+          />
+        </CardContent>
+      </Card>
+
+      {/* Tren Daily Sale */}
       <Card className="overflow-hidden border-border shadow-sm">
         <CardHeader className="border-b border-border/60 px-4 pb-3 pt-4">
           <SectionHeader icon={Activity} color="chart-1" title="Tren Penjualan Harian" />

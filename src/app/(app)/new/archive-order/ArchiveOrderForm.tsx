@@ -26,7 +26,7 @@ export function ArchiveOrderForm({ items, teamMembers }: { items: Item[]; teamMe
   const [manualAmount, setManualAmount] = useState('');
   const [customer, setCustomer] = useState<CustomerMatch | null>(null);
   const [paymentMethod, setPaymentMethod] = useState(PAYMENT_METHODS[0]);
-  const [paymentStatus, setPaymentStatus] = useState<'PAID' | 'UNPAID'>('UNPAID');
+  const [paymentStatus, setPaymentStatus] = useState<'PAID' | 'UNPAID'>('PAID');
   const [teamMemberId, setTeamMemberId] = useState('');
   const [dueDate, setDueDate] = useState('');
   const [note, setNote] = useState('');

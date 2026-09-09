@@ -1,7 +1,6 @@
 // coteadmin/src/app/(app)/more/page.tsx
 import Link from 'next/link';
 import { Card } from '@/components/ui/card';
-import { cn } from '@/lib/utils';
 import { 
   Package, 
   Receipt, 
@@ -10,46 +9,52 @@ import {
   UserCircle, 
   Settings, 
   ClipboardList, 
-  Users,
+  Users, 
   ChevronRight, 
-  Paperclip,
-  HelpCircle,
-  Info
+  Paperclip, 
+  HelpCircle, 
+  Info,
+  ShieldCheck,
+  Boxes,
+  BookOpen,
+  Wrench
 } from 'lucide-react';
 
 const MENU_GROUPS = [
   {
     title: 'Operasional',
     items: [
-      { href: '/orders', label: 'Pesanan / Order', icon: ClipboardList, ready: true },
-      { href: '/items', label: 'Item & Layanan', icon: Package, ready: true },
-      { href: '/raw-materials', label: 'Bahan/Barang Beli', icon: Package, ready: true },
-      { href: '/customers', label: 'Pelanggan', icon: Users, ready: true },
-      { href: '/promos', label: 'Promo & Diskon', icon: Tag, ready: true },
-      { href: '/attachments', label: 'Lampiran & Berkas', icon: Paperclip, ready: true },
+      { href: '/orders', label: 'Pesanan / Order', description: 'Daftar & status riwayat pesanan pelanggan', icon: ClipboardList, ready: true },
+      { href: '/items', label: 'Item & Layanan', description: 'Katalog produk, paket, dan tarif jasa', icon: Package, ready: true },
+      { href: '/raw-materials', label: 'Bahan / Barang Beli', description: 'Stok bahan baku & belanja operasional', icon: Boxes, ready: true },
+      { href: '/customers', label: 'Pelanggan', description: 'Database kontak & riwayat pelanggan', icon: Users, ready: true },
+      { href: '/promos', label: 'Promo & Diskon', description: 'Kode voucher & program diskon khusus', icon: Tag, ready: true },
+      { href: '/attachments', label: 'Lampiran & Berkas', description: 'Manajemen file & bukti berkas terunggah', icon: Paperclip, ready: true },
     ]
   },
   {
     title: 'Keuangan & Data',
     items: [
-      { href: '/transactions', label: 'Transaksi Kas', icon: Receipt, ready: true },
-      { href: '/reports', label: 'Laporan Keuangan', icon: BarChart3, ready: true },
-      { href: '/audit-logs', label: 'Log Audit', icon: ClipboardList, ready: true },
+      { href: '/transactions', label: 'Transaksi Kas', description: 'Pencatatan arus kas masuk & keluar', icon: Receipt, ready: true },
+      { href: '/assets', label: 'Aset & Penyusutan', description: 'Alat, mesin, dan penyusutan nilai aset usaha', icon: Wrench, ready: true },
+      { href: '/reports', label: 'Laporan Keuangan', description: 'Ringkasan omzet, laba rugi & performa', icon: BarChart3, ready: true },
+      { href: '/audit-logs', label: 'Log Audit', description: 'Rekam jejak riwayat aktivitas sistem', icon: ShieldCheck, ready: true },
     ]
   },
   {
     title: 'Pengaturan & Akun',
     items: [
-      { href: '/teams', label: 'Anggota Tim', icon: Users, ready: true },
-      { href: '/settings', label: 'Pengaturan Sistem', icon: Settings, ready: true },
-      { href: '/profile', label: 'Profil Saya', icon: UserCircle, ready: true },
+      { href: '/teams', label: 'Anggota Tim', description: 'Kelola akun staf & hak akses tim', icon: Users, ready: true },
+      { href: '/settings', label: 'Pengaturan Sistem', description: 'Profil usaha, nota struk & preferensi', icon: Settings, ready: true },
+      { href: '/profile', label: 'Profil Saya', description: 'Detail informasi & keamanan akun kamu', icon: UserCircle, ready: true },
     ]
   },
   {
     title: 'Lainnya',
     items: [
-      { href: '/help', label: 'Bantuan', icon: HelpCircle, ready: true },
-      { href: '/about', label: 'Tentang', icon: Info, ready: true },
+      { href: '/help', label: 'Bantuan', description: 'Panduan penggunaan & pusat bantuan', icon: HelpCircle, ready: true },
+      { href: '/about', label: 'Tentang', description: 'Informasi versi aplikasi & sistem', icon: Info, ready: true },
+      { href: '/tutorials', label: 'Tutorial', description: 'Panduan lengkap cara penggunaan aplikasi dan sistem', icon: BookOpen, ready: false },
     ]
   }
 ];
@@ -77,7 +82,7 @@ export default function MorePage() {
             {/* Kartu Menu */}
             <Card className="shadow-sm border-border overflow-hidden">
               <ul className="divide-y divide-border">
-                {group.items.map(({ href, label, icon: Icon, ready }) => (
+                {group.items.map(({ href, label, description, icon: Icon, ready }) => (
                   <li key={href}>
                     {ready ? (
                       <Link 
@@ -87,16 +92,22 @@ export default function MorePage() {
                         <div className="p-2 bg-primary/10 text-primary rounded-lg shrink-0 group-hover:scale-105 transition-transform" aria-hidden="true">
                           <Icon size={18} />
                         </div>
-                        <span className="font-semibold text-sm text-foreground flex-1">{label}</span>
-                        <ChevronRight size={18} className="text-muted-foreground/50 group-hover:text-primary group-hover:translate-x-0.5 transition-all" aria-hidden="true" />
+                        <div className="flex-1 min-w-0">
+                          <span className="font-semibold text-sm text-foreground block">{label}</span>
+                          <span className="text-xs text-muted-foreground block truncate">{description}</span>
+                        </div>
+                        <ChevronRight size={18} className="text-muted-foreground/50 group-hover:text-primary group-hover:translate-x-0.5 transition-all shrink-0" aria-hidden="true" />
                       </Link>
                     ) : (
                       <div className="flex items-center gap-3 p-3.5 bg-background/50 opacity-60 cursor-not-allowed select-none">
                         <div className="p-2 bg-muted text-muted-foreground rounded-lg shrink-0" aria-hidden="true">
                           <Icon size={18} />
                         </div>
-                        <span className="font-medium text-sm text-muted-foreground flex-1">{label}</span>
-                        <span className="text-[10px] uppercase font-bold tracking-wider text-muted-foreground bg-muted px-2 py-1 rounded-md">
+                        <div className="flex-1 min-w-0">
+                          <span className="font-medium text-sm text-muted-foreground block">{label}</span>
+                          <span className="text-xs text-muted-foreground/70 block truncate">{description}</span>
+                        </div>
+                        <span className="text-[10px] uppercase font-bold tracking-wider text-muted-foreground bg-muted px-2 py-1 rounded-md shrink-0">
                           Segera
                         </span>
                       </div>
